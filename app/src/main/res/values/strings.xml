@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">SmartLight</string>
+    <!--
+    <string name="creme">crenme</string>
+    <String name="kaltweiss">kaltweiss</String>
+    <String name="creme">creme</String>
+    <String name="rot">rot</String>
+    <String name="blutorange">blutorange</String>
+    <String name="kurkuma">kurkuma</String>
+    <String name="bernstein">bernstein</String>
+    <String name="gelb">gelb</String>
+    <String name="zitronegelb">zitronegelb</String>
+    <String name="limette">limette</String>
+    <String name="pistazie">pistazie</String>
+    <String name="apfelguen">apfelguen</String>
+    <String name="gruen">gruen</String>
+    <String name="greeTea">greeTea</String>
+    <String name="pfefferminz">pfefferminz</String>
+    <String name="mint">mint</String>
+    <String name="smaragd">smaragd</String>
+    <String name="azur">azur</String>
+    <String name="meerBlau">meerBlau</String>
+    <String name="saphir">saphir</String>
+    <String name="kornblume">kornblume</String>
+    <String name="dunkelblau">dunkelblau</String>
+    <String name="blueberry">blueberry</String>
+    <String name="lila">lila</String>
+    <String name="flieder">flieder</String>
+    <String name="magenta">magenta</String>
+    <String name="zuckerwatte">zuckerwatte</String>
+    <String name="pink">pink</String>
+    <String name="hummer">hummer</String>
+    <String name="koralle">koralle</String>
+    <String name="lachs">lachs</String>-->
+</resources>

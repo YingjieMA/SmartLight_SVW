@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/seekbarView"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_weight="1"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <SeekBar
+            android:id="@+id/seekBarRed"
+            android:splitTrack="false"
+            android:thumb="@drawable/seekbar_thumb"
+            android:layout_weight="5"
+            android:layout_gravity="center_vertical"
+            android:progressDrawable="@drawable/seekbar_style_red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="255" />
+
+        <EditText
+            android:inputType="number"
+            android:id="@+id/red_input"
+            android:gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/edit_text_size"
+            android:text="255"
+            android:hint="R"
+            android:theme="@style/MyEditTextRed"
+            android:textColor="#ff0000" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <SeekBar
+            android:id="@+id/seekBarGreen"
+            android:splitTrack="false"
+            android:thumb="@drawable/seekbar_thumb"
+            android:layout_weight="5"
+            android:layout_gravity="center_vertical"
+            android:progressDrawable="@drawable/seekbar_style_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="255" />
+
+        <EditText
+            android:id="@+id/green_input"
+            android:gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/edit_text_size"
+            android:text="255"
+            android:hint="G"
+            android:theme="@style/MyEditTextGreen"
+            android:textColor="#00ff00" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <SeekBar
+            android:id="@+id/seekBarBlue"
+            android:splitTrack="false"
+            android:thumb="@drawable/seekbar_thumb"
+            android:layout_weight="5"
+            android:layout_gravity="center_vertical"
+            android:progressDrawable="@drawable/seekbar_style_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="255" />
+
+        <EditText
+            android:id="@+id/blue_input"
+            android:gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/edit_text_size"
+            android:text="255"
+            android:hint="B"
+            android:theme="@style/MyEditTextBlue"
+            android:textColor="#0000ff" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <SeekBar
+            android:id="@+id/seekBarIntense"
+            android:splitTrack="false"
+            android:thumb="@drawable/seekbar_thumb"
+            android:layout_weight="5"
+            android:layout_gravity="center_vertical"
+            android:progressDrawable="@drawable/seekbar_style_intense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="100" />
+
+        <EditText
+            android:id="@+id/intense_input"
+            android:gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/edit_text_size"
+            android:text="255"
+            android:hint="I"
+            android:theme="@style/MyEditTextIntense"
+            android:textColor="#ffffff"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="0.5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></LinearLayout>
+</LinearLayout>

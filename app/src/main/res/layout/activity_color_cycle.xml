@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cycle_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backGround"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/light_name"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:layout_weight="5"
+            android:textSize="20sp"
+            android:text="11111"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_margin="5dp"
+            android:id="@+id/cycle_btn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:src="@drawable/cycle_btn_on"/>
+        <ImageView
+            android:id="@+id/seekbar_btn"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:src="@drawable/seekbar_btn_off"/>
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:id="@+id/table_btn"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:src="@drawable/table_btn_off"/>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/colorcycle"
+        android:layout_below="@+id/topimage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></RelativeLayout>
+</LinearLayout>
