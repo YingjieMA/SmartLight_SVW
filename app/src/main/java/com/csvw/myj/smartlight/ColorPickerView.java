@@ -39,7 +39,7 @@ public class ColorPickerView extends View {//颜色选择器自定义View
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setShader(s);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(ratio*50);
+        mPaint.setStrokeWidth(ratio*50+0.5f);
         Log.e("度",MainActivity.density+"");
 
         //初始化中心园画笔
@@ -86,9 +86,9 @@ public class ColorPickerView extends View {//颜色选择器自定义View
         setMeasuredDimension(CENTER_X * 2, CENTER_Y * 2);
     }
 
-    private static final int CENTER_X = (int) (ratio * 133);
-    private static final int CENTER_Y = (int) (ratio * 133);
-    private static final int CENTER_RADIUS = (int) (ratio * 50);
+    private static final int CENTER_X = (int) (ratio * 133+0.5f);
+    private static final int CENTER_Y = (int) (ratio * 133+0.5f);
+    private static final int CENTER_RADIUS = (int) (ratio * 50+0.5f);
 
     private int floatToByte(float x) {
         int n = Math.round(x);

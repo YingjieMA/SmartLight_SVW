@@ -1,18 +1,12 @@
 package com.csvw.myj.smartlight;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
@@ -23,13 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.accessibility.AccessibilityManager;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -43,14 +31,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.csvw.myj.smartlight.LightView.ReaadingLampView;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class Control extends Activity implements OnColorChangedListener {
     private ImageView carImage;
@@ -75,13 +56,13 @@ public class Control extends Activity implements OnColorChangedListener {
     private static int r = 255, g = 255, b = 255, i = 255;
 
     //Thumb图片大小 P20 200
-    private int seekWidth = 150;
-    private int seekHeight = 150;
+    private int seekWidth = (int) (MainActivity.density * 50+0.5f);
+    private int seekHeight = (int) (MainActivity.density * 50+0.5f);
     //用于隐藏的View
     View hiddenView;
 
     FrameLayout frameLayout;
-    ReaadingLampView reaadingLampView;
+    LightView reaadingLampView;
     LinearLayout linearLayout;
 
     @Override
@@ -199,12 +180,26 @@ public class Control extends Activity implements OnColorChangedListener {
         switch(string){
             case "Reading Lamp":
                 if (null!=reaadingLampView){
+                }else{
+                    reaadingLampView = new LightView(Control.this,R.drawable.reading_lamp_2);
+                    frameLayout.addView(reaadingLampView);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    /***
+     * 移除LightView
+     */
+    public void removeLightView(String string){
+        switch(string){
+            case "Reading Lamp":
+                if (null!=reaadingLampView){
                     ViewGroup parent = (ViewGroup) reaadingLampView.getParent();
                     parent.removeView(reaadingLampView);
                     reaadingLampView = null;
                 }
-                reaadingLampView = new ReaadingLampView(Control.this);
-                frameLayout.addView(reaadingLampView);
                 break;
             default:
                 break;
@@ -351,6 +346,7 @@ public class Control extends Activity implements OnColorChangedListener {
                             finalViewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                         } else {
                             le.setState(false);
+                            removeLightView(le.getName());
                             finalViewHolder.relativeLayout.setBackgroundColor(getColor(R.color.lightOff));
                             finalViewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                         }
