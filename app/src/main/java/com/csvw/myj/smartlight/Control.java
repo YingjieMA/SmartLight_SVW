@@ -110,10 +110,10 @@ public class Control extends Activity implements OnColorChangedListener {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.white_lamp_btn:
-                    imageView1.setImageResource(R.drawable.white_light_btn_blue);
-                    imageView2.setImageResource(R.drawable.rgb_lamp_btn);
-                    imageView3.setImageResource(R.drawable.smartlight_btn);
-                    imageView4.setImageResource(R.drawable.setting_btn);
+                    imageView1.setImageResource(R.drawable.white_light_btn_2_blue);
+                    imageView2.setImageResource(R.drawable.rgb_light_btn_2);
+                    imageView3.setImageResource(R.drawable.smartlight_btn_2);
+                    imageView4.setImageResource(R.drawable.setting_btn_2);
                     initialize(lightsList);
                     hiddenView = findViewById(R.id.cycle_layout);
                     if (null != hiddenView) {
@@ -124,10 +124,10 @@ public class Control extends Activity implements OnColorChangedListener {
                     }
                     break;
                 case R.id.rgb_lamp_btn:
-                    imageView1.setImageResource(R.drawable.white_lamp_btn);
-                    imageView2.setImageResource(R.drawable.rgb_light_btn_blue);
-                    imageView3.setImageResource(R.drawable.smartlight_btn);
-                    imageView4.setImageResource(R.drawable.setting_btn);
+                    imageView1.setImageResource(R.drawable.white_light_btn_2);
+                    imageView2.setImageResource(R.drawable.rgb_light_btn_2_blue);
+                    imageView3.setImageResource(R.drawable.smartlight_btn_2);
+                    imageView4.setImageResource(R.drawable.setting_btn_2);
                     View listView = findViewById(R.id.linearlayout1);
                     if (null != listView) {
                         initialize(rgbLightsList);
@@ -141,17 +141,17 @@ public class Control extends Activity implements OnColorChangedListener {
                     }
                     break;
                 case R.id.smartlight_btn:
-                    imageView1.setImageResource(R.drawable.white_lamp_btn);
-                    imageView2.setImageResource(R.drawable.rgb_lamp_btn);
-                    imageView3.setImageResource(R.drawable.smartlight_btn_blue);
-                    imageView4.setImageResource(R.drawable.setting_btn);
+                    imageView1.setImageResource(R.drawable.white_light_btn_2);
+                    imageView2.setImageResource(R.drawable.rgb_light_btn_2);
+                    imageView3.setImageResource(R.drawable.smartlight_btn_2_blue);
+                    imageView4.setImageResource(R.drawable.setting_btn_2);
                     Control.this.initialize(smartLightsList);
                     break;
                 case R.id.setting_btn:
-                    imageView1.setImageResource(R.drawable.white_lamp_btn);
-                    imageView2.setImageResource(R.drawable.rgb_lamp_btn);
-                    imageView3.setImageResource(R.drawable.smartlight_btn);
-                    imageView4.setImageResource(R.drawable.setting_btn_blue);
+                    imageView1.setImageResource(R.drawable.white_light_btn_2);
+                    imageView2.setImageResource(R.drawable.rgb_light_btn_2);
+                    imageView3.setImageResource(R.drawable.smartlight_btn_2);
+                    imageView4.setImageResource(R.drawable.setting_btn_2_blue);
                     break;
                 default:
                     break;
