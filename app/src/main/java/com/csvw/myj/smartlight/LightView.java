@@ -8,10 +8,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
-public class LightView extends View {
-    public float bitmapX;
-    public float bitmapY;
+public class LightView extends ImageView {
+    private float bitmapX;
+    private float bitmapY;
     public Bitmap bitmap;
     public Paint paint;
     public Matrix matrix;
@@ -19,17 +20,18 @@ public class LightView extends View {
     public int height;
     private float ratio;
     private int ResourecId;
-    public LightView(Context context,int ResourceId) {
+    public LightView(Context context,int ResourceId,float bitmapX,float bitmapY) {
         super(context);
-        bitmapX= (float) 0;
-        bitmapY=0;
+        this.bitmapX= bitmapX;
+        this.bitmapY=bitmapY;
         this.ResourecId = ResourceId;
         init();
 
     }
     private void init(){
         bitmap = BitmapFactory.decodeResource(this.getResources(), ResourecId);
-        ratio = bitmap.getWidth()/bitmap.getHeight();
+        Log.d("TAG", "ratio="+ bitmap.getWidth()+"/"+bitmap.getHeight());
+        ratio = (float) bitmap.getWidth()/bitmap.getHeight();
         paint = new Paint();
     }
 
@@ -56,7 +58,7 @@ public class LightView extends View {
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightResult = 0;
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
-//        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
         switch (widthSpecMode){
             case MeasureSpec.UNSPECIFIED:
                 widthResult = widthSpecSize;
@@ -68,9 +70,9 @@ public class LightView extends View {
             case MeasureSpec.EXACTLY:
                 //当xml布局中是准确的值，比如200dp是，判断一下当前view的宽度和准确值,取两个中大的，这样的好处是当view的宽度本事超过准确值不会出界
                 //其实可以直接使用准确值
-//                widthResult = Math.max(getContentWidth(), widthSpecSize);
-                widthResult = widthSpecSize;
-                Log.d("TAG", String.valueOf(ratio));
+                widthResult = Math.min(getContentWidth(), widthSpecSize);
+//                widthResult = widthSpecSize;
+                Log.d("TAG", "ratio="+ ratio);
                 heightResult = (int) (widthResult/ratio + 0.5f);
 
                 break;
@@ -87,17 +89,18 @@ public class LightView extends View {
 //                heightResult = Math.max(getContentHeight(), heightSpecSize);
 //                break;
 //        }
-        setMeasuredDimension(widthResult, heightResult);
+//        setMeasuredDimension(widthResult, heightResult);
+        setMeasuredDimension(widthSpecSize, (int) (widthSpecSize/1.7778+0.5f));
         width = widthResult;
         height = heightResult;
         Log.d("TAG", String.valueOf(height));
     }
 
-//    private int getContentWidth(){
-//        float contentWidth = bitmap.getWidth()+getPaddingLeft()+getPaddingRight();
-//        Log.d("TAG", "getContentWidth: contentWidth="+contentWidth);
-//        return (int)contentWidth;
-//    }
+    private int getContentWidth(){
+        float contentWidth = bitmap.getWidth()+getPaddingLeft()+getPaddingRight();
+        Log.d("TAG", "getContentWidth: contentWidth="+contentWidth);
+        return (int)contentWidth;
+    }
 //
 //    int getContentHeight(){
 //        float contentHeight = bitmap.getHeight()+getPaddingTop()+getPaddingBottom();

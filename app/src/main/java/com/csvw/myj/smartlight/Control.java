@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -63,6 +64,10 @@ public class Control extends Activity implements OnColorChangedListener {
 
     FrameLayout frameLayout;
     LightView reaadingLampView;
+    LightView doorOpenerLampView;
+    LightView footwellLampView;
+    LightView makeupLampView;
+    LightView mikoLampUpView;
     LinearLayout linearLayout;
 
     @Override
@@ -102,6 +107,7 @@ public class Control extends Activity implements OnColorChangedListener {
                 return true;
             }
         });
+
     }
 
     //单击事件监听器
@@ -181,8 +187,37 @@ public class Control extends Activity implements OnColorChangedListener {
             case "Reading Lamp":
                 if (null!=reaadingLampView){
                 }else{
-                    reaadingLampView = new LightView(Control.this,R.drawable.reading_lamp_2);
+                    reaadingLampView = new LightView(Control.this,R.drawable.reading_lamp,0,0);
                     frameLayout.addView(reaadingLampView);
+                }
+                break;
+            case "Door Opener Lamp":
+                if (null!=doorOpenerLampView){
+                }else{
+                    doorOpenerLampView = new LightView(Control.this,R.drawable.door_opener_lamp,0,221.2f);
+                    frameLayout.addView(doorOpenerLampView);
+                }
+                break;
+            case "Footwell Lamp_vo.":
+                if (null!=footwellLampView){
+                }else{
+                    footwellLampView = new LightView(Control.this,R.drawable.footwell_lamp,0,305.13f);
+                    frameLayout.addView(footwellLampView);
+                }
+                break;
+            case "Makeup Lamp":
+                if (null!=makeupLampView){
+                }else{
+                    makeupLampView = new LightView(Control.this,R.drawable.makeup_lamp,0,0);
+                    frameLayout.addView(makeupLampView);
+
+                }
+                break;
+            case "MIKO Lamp_up":
+                if (null!=mikoLampUpView){
+                }else{
+                    mikoLampUpView = new LightView(Control.this,R.drawable.miko_lamp_up,0,346.1f);
+                    frameLayout.addView(mikoLampUpView);
                 }
                 break;
             default:
@@ -199,6 +234,34 @@ public class Control extends Activity implements OnColorChangedListener {
                     ViewGroup parent = (ViewGroup) reaadingLampView.getParent();
                     parent.removeView(reaadingLampView);
                     reaadingLampView = null;
+                }
+                break;
+            case "Door Opener Lamp":
+                if (null!=doorOpenerLampView){
+                    ViewGroup parent = (ViewGroup) doorOpenerLampView.getParent();
+                    parent.removeView(doorOpenerLampView);
+                    doorOpenerLampView = null;
+                }
+                break;
+            case "Footwell Lamp_vo.":
+                if (null!=footwellLampView){
+                    ViewGroup parent = (ViewGroup) footwellLampView.getParent();
+                    parent.removeView(footwellLampView);
+                    footwellLampView = null;
+                }
+                break;
+            case "Makeup Lamp":
+                if (null!=makeupLampView){
+                    ViewGroup parent = (ViewGroup) makeupLampView.getParent();
+                    parent.removeView(makeupLampView);
+                    makeupLampView = null;
+                }
+                break;
+            case "MIKO Lamp_up":
+                if (null!=mikoLampUpView){
+                    ViewGroup parent = (ViewGroup) mikoLampUpView.getParent();
+                    parent.removeView(mikoLampUpView);
+                    mikoLampUpView = null;
                 }
                 break;
             default:
