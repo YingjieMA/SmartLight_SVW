@@ -37,7 +37,7 @@ public class GetLightList {
         RgbLight rgbLight1 = new RgbLight("rgb1","IP Decor Lamp","rgb",true,255,0,0,100);
         RgbLight rgbLight2 = new RgbLight("rgb2","Starry Lamp","rgb",false,255,255,255,100);
         RgbLight rgbLight3 = new RgbLight("rgb3","Door Decor Lamp_vo.","rgb",false,255,255,255,100);
-        RgbLight rgbLight4 = new RgbLight("rgb4","Door Decor Lamp_vo.","rgb",false,255,255,255,100);
+        RgbLight rgbLight4 = new RgbLight("rgb4","Door Decor Lamp_hi.","rgb",false,255,255,255,100);
         RgbLight rgbLight5 = new RgbLight("rgb5","Door Handle Lamp","rgb",false,255,255,255,100);
         SmartLight smartLight1 = new SmartLight("sl1","Smart Light","smart",false,255,255,255,100,"sport");
         allList.add(light1);
@@ -51,9 +51,9 @@ public class GetLightList {
         allList.add(light9);
         allList.add(light10);
         allList.add(rgbLight1);
-        allList.add(rgbLight2);
         allList.add(rgbLight3);
         allList.add(rgbLight4);
+        allList.add(rgbLight2);
         allList.add(rgbLight5);
         allList.add(smartLight1);
         //分类

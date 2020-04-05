@@ -4,12 +4,19 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.annotation.SuppressLint;
 
+@SuppressLint("AppCompatCustomView")
 public class LightView extends ImageView {
     private float bitmapX;
     private float bitmapY;
@@ -20,6 +27,9 @@ public class LightView extends ImageView {
     public int height;
     private float ratio;
     private int ResourecId;
+    private Integer color;
+    Bitmap ScaledBitmap;
+//    private Drawable drawable;
     public LightView(Context context,int ResourceId,float bitmapX,float bitmapY) {
         super(context);
         this.bitmapX= bitmapX;
@@ -28,18 +38,32 @@ public class LightView extends ImageView {
         init();
 
     }
+    public LightView(Context context,int ResourceId,float bitmapX,float bitmapY,int color) {
+        super(context);
+        this.bitmapX= bitmapX;
+        this.bitmapY=bitmapY;
+        this.ResourecId = ResourceId;
+        this.color = color;
+        init();
+
+    }
     private void init(){
         bitmap = BitmapFactory.decodeResource(this.getResources(), ResourecId);
         Log.d("TAG", "ratio="+ bitmap.getWidth()+"/"+bitmap.getHeight());
         ratio = (float) bitmap.getWidth()/bitmap.getHeight();
-        paint = new Paint();
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         this.init();
-        Bitmap ScaledBitmap = Bitmap.createScaledBitmap(bitmap,width,height,false);
+        if (color != null){
+            Bitmap newBitmap = makeTintBitmap(bitmap,color);
+            ScaledBitmap = Bitmap.createScaledBitmap(newBitmap,width,height,false);
+        }else{
+            ScaledBitmap = Bitmap.createScaledBitmap(bitmap,width,height,false);
+        }
         canvas.drawBitmap(ScaledBitmap,bitmapX+getPaddingLeft(),bitmapY+getPaddingTop(),paint);
         if (bitmap.isRecycled()){
             bitmap.recycle();
@@ -114,6 +138,18 @@ public class LightView extends ImageView {
         Log.d("TAG", "onSizeChanged: w="+w+",h="+h+",startX="+bitmapX+",startY="+bitmapY);
     }
 
+    public static Bitmap makeTintBitmap(Bitmap inputBitmap, int tintColor) {
+        if (inputBitmap == null) {
+            return null;
+        }
+
+        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(), inputBitmap.getConfig());
+        Canvas canvas = new Canvas(outputBitmap);
+        Paint paint = new Paint();
+        paint.setColorFilter(new PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(inputBitmap, 0, 0, paint);
+        return outputBitmap;
+    }
 
 
 }

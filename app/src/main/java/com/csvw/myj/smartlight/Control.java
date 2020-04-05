@@ -35,6 +35,7 @@ import android.widget.Toast;
 import java.util.List;
 
 public class Control extends Activity implements OnColorChangedListener {
+    final String TAG = "Control";
     private ImageView carImage;
     private RelativeLayout rl;
     private ListView lvLights;
@@ -68,6 +69,11 @@ public class Control extends Activity implements OnColorChangedListener {
     LightView footwellLampView;
     LightView makeupLampView;
     LightView mikoLampUpView;
+    //rgbLight
+    LightView ipDecorLampView;
+    LightView doorDecorLampVo;
+//    RGBLightView ipDecorLampView;
+
     LinearLayout linearLayout;
 
     @Override
@@ -194,7 +200,7 @@ public class Control extends Activity implements OnColorChangedListener {
             case "Door Opener Lamp":
                 if (null!=doorOpenerLampView){
                 }else{
-                    doorOpenerLampView = new LightView(Control.this,R.drawable.door_opener_lamp,0,221.2f);
+                    doorOpenerLampView = new LightView(Control.this,R.drawable.door_opener_lamp,0,221.5f);
                     frameLayout.addView(doorOpenerLampView);
                 }
                 break;
@@ -210,7 +216,6 @@ public class Control extends Activity implements OnColorChangedListener {
                 }else{
                     makeupLampView = new LightView(Control.this,R.drawable.makeup_lamp,0,0);
                     frameLayout.addView(makeupLampView);
-
                 }
                 break;
             case "MIKO Lamp_up":
@@ -268,7 +273,54 @@ public class Control extends Activity implements OnColorChangedListener {
                 break;
         }
     }
-
+    /***
+     * 添加RGBLightView
+     */
+    public void addRGBLightView(String string,int color){
+        switch(string){
+            case "IP Decor Lamp":
+                if (null!=ipDecorLampView){
+                }else{
+                    ipDecorLampView = new LightView(Control.this,R.drawable.ip_decor_lamp,0,255.69f,color);
+                    frameLayout.addView(ipDecorLampView);
+                }
+                break;
+            case "Starry Lamp":
+                break;
+            case "Door Decor Lamp_vo.":
+                if (null!=doorDecorLampVo){
+                }else{
+                    doorDecorLampVo = new LightView(Control.this,R.drawable.door_decor_lamp_vo,0,252.43f,color);
+                    frameLayout.addView(doorDecorLampVo);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    /***
+     * 移除RGBLightView
+     */
+    public void removeRGBLightView(String string){
+        switch(string){
+            case "IP Decor Lamp":
+                if (null!=ipDecorLampView){
+                    ViewGroup parent = (ViewGroup) ipDecorLampView.getParent();
+                    parent.removeView(ipDecorLampView);
+                    ipDecorLampView = null;
+                }
+                break;
+            case "Door Decor Lamp_vo.":
+                if (null!=doorDecorLampVo){
+                    ViewGroup parent = (ViewGroup) doorDecorLampVo.getParent();
+                    parent.removeView(doorDecorLampVo);
+                    doorDecorLampVo = null;
+                }
+                break;
+            default:
+                break;
+        }
+    }
     @Override
     public void colorChanged(int color) {
         RgbLight light = (RgbLight) adapter.light;
@@ -278,10 +330,30 @@ public class Control extends Activity implements OnColorChangedListener {
             light.setrValue((color & 0xff0000) >> 16);
             light.setgValue((color & 0x00ff00) >> 8);
             light.setbValue((color & 0x0000ff));
-            r = light.getrValue();
-            g = light.getgValue();
-            b = light.getbValue();
+            String lightName = (String) tv.getText();
+            switch(lightName){
+                case "IP Decor Lamp":
+                    if (ipDecorLampView!=null) {
+                        ViewGroup parent = (ViewGroup) ipDecorLampView.getParent();
+                        parent.removeView(ipDecorLampView);
+                        ipDecorLampView = new LightView(Control.this, R.drawable.ip_decor_lamp, 0, 255.69f, color);
+                        frameLayout.addView(ipDecorLampView);
+                    }
+                    break;
+                case "Door Decor Lamp_vo.":
+                    if (doorDecorLampVo!=null) {
+                        ViewGroup parent = (ViewGroup) doorDecorLampVo.getParent();
+                        parent.removeView(doorDecorLampVo);
+                        doorDecorLampVo = new LightView(Control.this,R.drawable.door_decor_lamp_vo,0,252.43f,color);
+                        frameLayout.addView(doorDecorLampVo);
+                        doorOpenerLampView=null;
+                    }
+                    break;
+            }
         }
+        r = light.getrValue();
+        g = light.getgValue();
+        b = light.getbValue();
         Log.i("11", adapter.light.toString());
     }
 
@@ -416,10 +488,12 @@ public class Control extends Activity implements OnColorChangedListener {
                     } else {
                         if (isChecked == true) {
                             le.setState(true);
+                            addRGBLightView(le.getName(),Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                             finalViewHolder.relativeLayout.setBackgroundColor(Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                             finalViewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                         } else {
                             le.setState(false);
+                            removeRGBLightView(le.getName());
                             finalViewHolder.relativeLayout.setBackgroundColor(getColor(R.color.lightOff));
                             finalViewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                         }
