@@ -7,6 +7,7 @@ public class ColorTamplate implements Comparable<ColorTamplate> {
     private String appColor;
     //传输的颜色值
     private String lightColor;
+    private String type;
 
 
 
@@ -20,10 +21,25 @@ public class ColorTamplate implements Comparable<ColorTamplate> {
         this.lightColor = lightColor;
     }
 
+    public ColorTamplate(int id, String name, String appColor, String lightColor, String type) {
+        this.id = id;
+        this.name = name;
+        this.appColor = appColor;
+        this.lightColor = lightColor;
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public int getId() {
         return id;

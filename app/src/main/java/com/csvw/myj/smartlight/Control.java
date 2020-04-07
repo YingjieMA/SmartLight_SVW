@@ -438,17 +438,21 @@ public class Control extends Activity implements OnColorChangedListener {
             final Light le = lightsList.get(position);
             if (le.getType() == "white" || le.getType() == "smart") {
                 if (le.getState() == true) {
+                    addLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(Color.argb(255, 255, 255, 255));
                     viewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                 } else {
+                    removeLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(getColor(R.color.lightOff));
                     viewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                 }
             } else {
                 if (le.getState() == true) {
+                    addRGBLightView(le.getName(),Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                     viewHolder.relativeLayout.setBackgroundColor(Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                     viewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                 } else {
+                    removeRGBLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(getColor(R.color.lightOff));
                     viewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                 }

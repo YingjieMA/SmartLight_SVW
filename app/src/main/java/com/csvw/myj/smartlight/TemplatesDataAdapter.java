@@ -5,6 +5,7 @@ package com.csvw.myj.smartlight;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ public class TemplatesDataAdapter extends BaseAdapter {
 	private class ViewHolder {
 		private TextView name;
 		private ImageView imgPicture;
+		private ImageView imgBorder;
 		private FrameLayout frameLayout;
 	}
 	@Override
@@ -71,6 +73,7 @@ public class TemplatesDataAdapter extends BaseAdapter {
 			viewHolder.imgPicture= (ImageView) itemView
 					.findViewById(R.id.templateimage);
 			viewHolder.frameLayout = itemView.findViewById(R.id.gird_list_item);
+			viewHolder.imgBorder = itemView.findViewById(R.id.border);
 			itemView.setTag(viewHolder);
 		
 		} else {
@@ -108,6 +111,9 @@ public class TemplatesDataAdapter extends BaseAdapter {
 		viewHolder.name.setText(item.getName());
 		Log.i("object",item.getAppColor());
 		viewHolder.imgPicture.setBackgroundColor(Color.parseColor(item.getAppColor()));
+		if (dataList.get(position).getType() == "VW10"){
+			viewHolder.imgBorder.setImageResource(R.drawable.grid_view_border);
+		}
 		return itemView;
 	}
 
