@@ -1,29 +1,50 @@
 package com.csvw.myj.smartlight;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.lang.ref.WeakReference;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class Welcome extends AppCompatActivity implements View.OnTouchListener {
+    private final String TAG = "Welcome";
     Button button;
     CustomDialog customDialog;
     TextView connectText;
     ImageView imageViewPositive;
     ImageView imageViewNegative;
     RelativeLayout relativeLayout;
+    private static TcpClient tcpClient = null;
+    Executor exec = Executors.newCachedThreadPool();
+    private final MyHandler myHandler = new MyHandler(this);
+    public static Context context;
+    private MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        context = this;
+        bindReceiver();
 //        reaadingLampView = new ReaadingLampView(Welcome.this);
 //        relativeLayout = findViewById(R.id.relative);
         connectText = findViewById(R.id.content_text);
@@ -39,7 +60,20 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 dialog.dismiss();
                 imageViewPositive = customDialog.findViewById(R.id.positiveTextView);
                 //设置你的操作事项
-//                imageViewPositive.setBackgroundColor(Color.parseColor("#ffffff"));
+                tcpClient = new TcpClient("192.168.43.1",8080);
+                exec.execute(tcpClient);
+                Message message  = Message.obtain();
+                message.what = 2;
+                message.obj = "lalala";
+                myHandler.sendMessage(message);
+
+                exec.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        tcpClient.send("我是客户端");
+                    }
+                });
+
                 connectText.setText("Wifi连接成功");
                 button.setEnabled(true);
 //                relativeLayout.addView(reaadingLampView);
@@ -56,6 +90,17 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                         button.setEnabled(true);
                     }
                 });
+        connectText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                exec.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        tcpClient.send("我是服务器");
+//                    }
+//                });
+            }
+        });
         customDialog = builder.create();
         customDialog.setCancelable(false);
         customDialog.show();
@@ -120,5 +165,47 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 break;
         }
         return false;
+    }
+    private class MyHandler extends Handler{
+        private WeakReference<Welcome> mActivity;
+
+        MyHandler(Welcome activity) {
+            mActivity = new WeakReference<Welcome>(activity);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if(mActivity != null){
+                switch (msg.what){
+                    case 1:
+                        Log.i(TAG,"收到："+ msg.obj.toString());
+                        break;
+                    case 2:
+                        Log.i(TAG,"发送："+ msg.obj.toString());
+                        break;
+                }
+            }
+        }
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String mAction = intent.getAction();
+            switch (mAction){
+                case "tcpClientReceiver":
+                    String msg = intent.getStringExtra("tcpClientReceiver");
+                    Message message = Message.obtain();
+                    message.what = 1;
+                    message.obj = msg;
+                    myHandler.sendMessage(message);
+                    break;
+            }
+        }
+    }
+    private void bindReceiver(){
+        IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
+        registerReceiver(myBroadcastReceiver,intentFilter);
     }
 }
