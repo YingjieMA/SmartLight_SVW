@@ -21,7 +21,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
 import java.lang.ref.WeakReference;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -38,6 +42,8 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
     private final MyHandler myHandler = new MyHandler(this);
     public static Context context;
     private MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
+    private Timer timer;
+    private MyTimerTask task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,19 +66,32 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 dialog.dismiss();
                 imageViewPositive = customDialog.findViewById(R.id.positiveTextView);
                 //设置你的操作事项
-                tcpClient = new TcpClient("192.168.43.1",8080);
-                exec.execute(tcpClient);
-                Message message  = Message.obtain();
-                message.what = 2;
-                message.obj = "lalala";
-                myHandler.sendMessage(message);
+//                try {
+//                    try{
+//                        checkTimeOut();
+                        tcpClient = new TcpClient("192.168.43.1",8080);
+                        exec.execute(tcpClient);
+                        Message message  = Message.obtain();
+                        message.what = 2;
+                        message.obj = "客户端已连接";
+                        myHandler.sendMessage(message);
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                    }
+//                    myHandler.sendEmptyMessage(5000);
+//                }catch (Exception e){
+//                    Log.e("LoginThread", e.getMessage());
+//                }
 
-                exec.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        tcpClient.send("我是客户端");
-                    }
-                });
+
+
+
+//                exec.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        tcpClient.send("我是客户端");
+//                    }
+//                });
 
                 connectText.setText("Wifi连接成功");
                 button.setEnabled(true);
@@ -183,6 +202,10 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                     case 2:
                         Log.i(TAG,"发送："+ msg.obj.toString());
                         break;
+                    case 5000:
+                        timer.cancel();
+                        tcpClient.closeSelf();
+                        break;
                 }
             }
         }
@@ -207,5 +230,23 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
     private void bindReceiver(){
         IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
         registerReceiver(myBroadcastReceiver,intentFilter);
+    }
+
+    class MyTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            myHandler.sendEmptyMessage(5000);
+        }
+    }
+
+    private void checkTimeOut(){
+        try{
+            timer = new Timer();
+            task = new MyTimerTask();
+            timer.schedule(task, 5000);
+        }catch(Exception e){
+            Log.e("timer", e.getMessage());
+        }
     }
 }

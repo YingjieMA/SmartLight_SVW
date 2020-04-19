@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class TcpClient implements Runnable {
 
@@ -38,9 +39,6 @@ public class TcpClient implements Runnable {
     public void run() {
         try {
             socket = new Socket(serverIP, serverPort);
-//            if (!socket.isConnected()){
-//                isRun = false;
-//            }
             socket.setSoTimeout(5000);
             pw = new PrintWriter(socket.getOutputStream(),true);
             is = socket.getInputStream();
@@ -51,17 +49,32 @@ public class TcpClient implements Runnable {
         while (isRun){
             try {
                 rcvLen = dis.read(buff);
-                rcvMsg = new String(buff,0,rcvLen,"utf-8");
-                Log.i(TAG,"run收到消息: "+rcvMsg);
-                Intent intent = new Intent();
-                intent.setAction("tcpClientReceiver");
-                intent.putExtra("tcpClientReceiver",rcvMsg);
-                Welcome.context.sendBroadcast(intent);
-                if (rcvMsg.equals("QuitClient")){
-                    isRun = false;
+                if (rcvLen!=-1){
+                    rcvMsg = new String(buff,0,rcvLen,"utf-8");
+                    Log.i(TAG,"run收到消息: "+rcvMsg);
+                    Intent intent = new Intent();
+                    intent.setAction("tcpClientReceiver");
+                    intent.putExtra("tcpClientReceiver",rcvMsg);
+                    Welcome.context.sendBroadcast(intent);
+                    if (rcvMsg.equals("QuitClient")){
+                        isRun = false;
+                    }
                 }
-            } catch (IOException e) {
+            }catch (NullPointerException e){
+                Log.i(TAG,"连接不到服务器");
+                try {
+                    socket = new Socket(serverIP, serverPort);
+                    socket.setSoTimeout(5000);
+                    pw = new PrintWriter(socket.getOutputStream(),true);
+                    is = socket.getInputStream();
+                    dis = new DataInputStream(is);
+                } catch (IOException m) {
+                    m.printStackTrace();
+                }
+//                closeSelf();
+            }catch (IOException e) {
                 e.printStackTrace();
+                Log.i(TAG,"连接异常");
             }
         }
 
