@@ -54,6 +54,12 @@
             android:layout_height="match_parent"
             android:src="@drawable/rgb_light_btn_2"/>
         <ImageView
+            android:id="@+id/mood_btn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/mood_btn"/>
+        <ImageView
             android:id="@+id/smartlight_btn"
             android:layout_weight="1"
             android:layout_width="0dp"

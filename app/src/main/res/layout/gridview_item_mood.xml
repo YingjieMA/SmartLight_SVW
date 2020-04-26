@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+    <FrameLayout
+        android:id="@+id/mood_gird_list_item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/mood_border"
+            android:layout_width="60dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:layout_height="60dp" />
+        <ImageView
+            android:id="@+id/mood_templateimage"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:contentDescription="@null"
+            android:scaleType="fitXY"
+            />
+
+        <TextView
+            android:paddingTop="14dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="5dp"
+            android:id="@+id/mood_templatename"
+            android:lineSpacingMultiplier="0.75"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:textColor="@color/black"
+            android:typeface="sans"
+            android:textSize="10sp" />
+    </FrameLayout>
+
+
+</RelativeLayout>

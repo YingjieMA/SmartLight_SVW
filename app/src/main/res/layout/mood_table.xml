@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/moodTableView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="15dp"
+    android:paddingLeft="7dp"
+    android:paddingRight="7dp" >
+
+    <GridView
+        android:id="@+id/template_gridview_mood"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:columnWidth="90dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="5"
+        android:paddingTop="8dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" />
+
+</LinearLayout>

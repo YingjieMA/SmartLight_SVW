@@ -75,6 +75,7 @@ public class Control extends Activity implements OnColorChangedListener {
 //    RGBLightView ipDecorLampView;
 
     LinearLayout linearLayout;
+    private ImageView imageView5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +100,12 @@ public class Control extends Activity implements OnColorChangedListener {
         imageView2 = findViewById(R.id.rgb_lamp_btn);
         imageView3 = findViewById(R.id.smartlight_btn);
         imageView4 = findViewById(R.id.setting_btn);
+        imageView5 = findViewById(R.id.mood_btn);
         imageView1.setOnClickListener(l);
         imageView2.setOnClickListener(l);
         imageView3.setOnClickListener(l);
         imageView4.setOnClickListener(l);
+        imageView5.setOnClickListener(l);
         //carImage
         carImage = findViewById(R.id.carImage);
         carImage.setOnTouchListener(new View.OnTouchListener() {
@@ -126,6 +129,7 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView2.setImageResource(R.drawable.rgb_light_btn_2);
                     imageView3.setImageResource(R.drawable.smartlight_btn_2);
                     imageView4.setImageResource(R.drawable.setting_btn_2);
+                    imageView5.setImageResource(R.drawable.mood_btn);
                     initialize(lightsList);
                     hiddenView = findViewById(R.id.cycle_layout);
                     if (null != hiddenView) {
@@ -140,6 +144,7 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView2.setImageResource(R.drawable.rgb_light_btn_2_blue);
                     imageView3.setImageResource(R.drawable.smartlight_btn_2);
                     imageView4.setImageResource(R.drawable.setting_btn_2);
+                    imageView5.setImageResource(R.drawable.mood_btn);
                     View listView = findViewById(R.id.linearlayout1);
                     if (null != listView) {
                         initialize(rgbLightsList);
@@ -157,6 +162,7 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView2.setImageResource(R.drawable.rgb_light_btn_2);
                     imageView3.setImageResource(R.drawable.smartlight_btn_2_blue);
                     imageView4.setImageResource(R.drawable.setting_btn_2);
+                    imageView5.setImageResource(R.drawable.mood_btn);
                     Control.this.initialize(smartLightsList);
                     break;
                 case R.id.setting_btn:
@@ -164,7 +170,14 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView2.setImageResource(R.drawable.rgb_light_btn_2);
                     imageView3.setImageResource(R.drawable.smartlight_btn_2);
                     imageView4.setImageResource(R.drawable.setting_btn_2_blue);
+                    imageView5.setImageResource(R.drawable.mood_btn);
                     break;
+                case R.id.mood_btn:
+                    imageView1.setImageResource(R.drawable.white_light_btn_2);
+                    imageView2.setImageResource(R.drawable.rgb_light_btn_2);
+                    imageView3.setImageResource(R.drawable.smartlight_btn_2);
+                    imageView4.setImageResource(R.drawable.setting_btn_2);
+                    imageView5.setImageResource(R.drawable.mood_btn_blue);
                 default:
                     break;
             }
