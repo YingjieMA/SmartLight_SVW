@@ -12,28 +12,36 @@
             android:layout_gravity="center"
             android:scaleType="fitXY"
             android:layout_height="60dp" />
-        <ImageView
-            android:id="@+id/mood_templateimage"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+        <LinearLayout
             android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:contentDescription="@null"
-            android:scaleType="fitXY"
-            />
-
-        <TextView
-            android:paddingTop="14dp"
-            android:paddingLeft="6dp"
-            android:paddingRight="5dp"
-            android:id="@+id/mood_templatename"
-            android:lineSpacingMultiplier="0.75"
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:textColor="@color/black"
-            android:typeface="sans"
-            android:textSize="10sp" />
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/mood_templateimage"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                />
+
+            <TextView
+                android:paddingTop="14dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="5dp"
+                android:id="@+id/mood_templatename"
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:typeface="sans"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
     </FrameLayout>
 
 

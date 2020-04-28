@@ -1,6 +1,6 @@
 package com.csvw.myj.smartlight;
 
-public class ColorTamplate implements Comparable<ColorTamplate> {
+public class ColorTemplate implements Comparable<ColorTemplate> {
     private int id;
     private String name;
     //显示的颜色值
@@ -11,17 +11,17 @@ public class ColorTamplate implements Comparable<ColorTamplate> {
 
 
 
-    public ColorTamplate() {
+    public ColorTemplate() {
     }
 
-    public ColorTamplate(int id, String name, String appColor, String lightColor) {
+    public ColorTemplate(int id, String name, String appColor, String lightColor) {
         this.id = id;
         this.name = name;
         this.appColor = appColor;
         this.lightColor = lightColor;
     }
 
-    public ColorTamplate(int id, String name, String appColor, String lightColor, String type) {
+    public ColorTemplate(int id, String name, String appColor, String lightColor, String type) {
         this.id = id;
         this.name = name;
         this.appColor = appColor;
@@ -70,7 +70,7 @@ public class ColorTamplate implements Comparable<ColorTamplate> {
     }
 
     @Override
-    public int compareTo(ColorTamplate o) {
+    public int compareTo(ColorTemplate o) {
         return this.id-o.getId();
     }
 }

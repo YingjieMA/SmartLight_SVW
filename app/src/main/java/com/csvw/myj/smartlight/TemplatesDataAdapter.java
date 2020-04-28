@@ -3,33 +3,26 @@ package com.csvw.myj.smartlight;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 
 
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 public class TemplatesDataAdapter extends BaseAdapter {
 	private Context context;
-	private List<ColorTamplate> dataList;
+	private List<ColorTemplate> dataList;
 	private OnColorChangedListener mListener;
-	public TemplatesDataAdapter(Context context, List<ColorTamplate> dataList,OnColorChangedListener l) {
+	public TemplatesDataAdapter(Context context, List<ColorTemplate> dataList, OnColorChangedListener l) {
 		mListener = l;
 		this.context = context;
 		this.dataList = dataList;
@@ -100,7 +93,7 @@ public class TemplatesDataAdapter extends BaseAdapter {
 				return false;
 			}
 		});
-		final ColorTamplate item = this.dataList.get(position);
+		final ColorTemplate item = this.dataList.get(position);
 		viewHolder.frameLayout.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

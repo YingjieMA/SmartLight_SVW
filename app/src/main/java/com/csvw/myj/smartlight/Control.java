@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -43,7 +42,7 @@ public class Control extends Activity implements OnColorChangedListener {
     private List<Light> lightsList;
     private List<Light> rgbLightsList;
     private List<Light> smartLightsList;
-    private List<ColorTamplate> colorTamplateList;
+    private List<ColorTemplate> colorTemplateList;
     private ImageView imageView1, imageView2, imageView3, imageView4;
     private View view;
     private LayoutInflater inflater;
@@ -193,8 +192,8 @@ public class Control extends Activity implements OnColorChangedListener {
 
     }
 
-    private void initializeTamplates(List<ColorTamplate> colorTamplateList) {
-        templatesDataAdapter = new TemplatesDataAdapter(this, colorTamplateList,this);
+    private void initializeTamplates(List<ColorTemplate> colorTemplateList) {
+        templatesDataAdapter = new TemplatesDataAdapter(this, colorTemplateList,this);
         this.gvTamplate.setAdapter(templatesDataAdapter);
 
     }
@@ -542,8 +541,8 @@ public class Control extends Activity implements OnColorChangedListener {
         View vwColorTable = inflater.inflate(R.layout.vw_color_table, relativeLayout, false);
         gvTamplate = vwColorTable.findViewById(R.id.template_gridview);
         relativeLayout.addView(vwColorTable);
-        colorTamplateList = new GetColorTableList().getAllList();
-        initializeTamplates(colorTamplateList);
+        colorTemplateList = new GetColorTableList().getAllList();
+        initializeTamplates(colorTemplateList);
     }
 
     /**
