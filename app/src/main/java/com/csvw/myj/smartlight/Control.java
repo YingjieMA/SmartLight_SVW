@@ -48,6 +48,7 @@ public class Control extends Activity implements OnColorChangedListener {
     private LayoutInflater inflater;
     LightsDataAdapter adapter;
     TemplatesDataAdapter templatesDataAdapter;
+    MoodDataAdapter moodDataAdapter;
     ColorPickerView colorPickerView;
 
     Boolean[] notHandleAfterTextChangedEvent = {false, false, false, false};
@@ -177,6 +178,14 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView3.setImageResource(R.drawable.smartlight_btn_2);
                     imageView4.setImageResource(R.drawable.setting_btn_2);
                     imageView5.setImageResource(R.drawable.mood_btn_blue);
+                    hiddenView = findViewById(R.id.cycle_layout);
+                    if (null != hiddenView) {
+                        ViewGroup parent = (ViewGroup) hiddenView.getParent();
+                        parent.removeView(hiddenView);
+                        view = inflater.inflate(R.layout.mood_table, rl, false);
+                        rl.addView(view);
+                        initializeMood(new GetMoodTemplateList().getAllList(),view);
+                    }
                 default:
                     break;
             }
@@ -192,6 +201,20 @@ public class Control extends Activity implements OnColorChangedListener {
 
     }
 
+    /**
+     * 初始化Mood
+     * @param moodTemplateList
+     */
+    private void initializeMood(List<MoodTemplate> moodTemplateList,View view) {
+        moodDataAdapter = new MoodDataAdapter(this, moodTemplateList);
+        gvTamplate = view.findViewById(R.id.template_gridview_mood);
+        this.gvTamplate.setAdapter(moodDataAdapter);
+
+    }
+    /**
+     * 初始化30色标准
+     * @param colorTemplateList
+     */
     private void initializeTamplates(List<ColorTemplate> colorTemplateList) {
         templatesDataAdapter = new TemplatesDataAdapter(this, colorTemplateList,this);
         this.gvTamplate.setAdapter(templatesDataAdapter);

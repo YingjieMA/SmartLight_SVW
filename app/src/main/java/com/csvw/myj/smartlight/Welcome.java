@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.csvw.myj.smartlight.utils.Constants;
+
 import org.json.JSONException;
 
 import java.lang.ref.WeakReference;
@@ -66,22 +68,28 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 dialog.dismiss();
                 imageViewPositive = customDialog.findViewById(R.id.positiveTextView);
                 //设置你的操作事项
-//                try {
-//                    try{
-//                        checkTimeOut();
-                        tcpClient = new TcpClient("192.168.43.1",8080);
+                try {
+                    try{
+                        checkTimeOut();
+                        tcpClient = new TcpClient(Constants.SERVER_IP,Constants.SERVER_PORT);
+//                        new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                tcpClient.run();
+//                            }
+//                        };
                         exec.execute(tcpClient);
                         Message message  = Message.obtain();
                         message.what = 2;
                         message.obj = "客户端已连接";
                         myHandler.sendMessage(message);
-//                    }catch (Exception e){
-//                        e.printStackTrace();
-//                    }
-//                    myHandler.sendEmptyMessage(5000);
-//                }catch (Exception e){
-//                    Log.e("LoginThread", e.getMessage());
-//                }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    myHandler.sendEmptyMessage(5000);
+                }catch (Exception e){
+                    Log.e("LoginThread", e.getMessage());
+                }
 
 
 
@@ -112,12 +120,12 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
         connectText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                exec.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        tcpClient.send("我是服务器");
-//                    }
-//                });
+                exec.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        tcpClient.send("hello Mr. Song");
+                    }
+                });
             }
         });
         customDialog = builder.create();
@@ -204,7 +212,7 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                         break;
                     case 5000:
                         timer.cancel();
-                        tcpClient.closeSelf();
+                        //tcpClient.closeSelf();
                         break;
                 }
             }

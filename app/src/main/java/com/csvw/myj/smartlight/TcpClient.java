@@ -13,8 +13,8 @@ import java.net.SocketTimeoutException;
 public class TcpClient implements Runnable {
 
     final private String TAG = "TcpClient";
-    private String serverIP = "192.0.0.1";
-    private int serverPort = 1234;
+    private String serverIP = "192.168.10.2";
+    private int serverPort = 8080;
     private Socket socket = null;
     private PrintWriter pw;
     private InputStream is;
