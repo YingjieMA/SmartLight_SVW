@@ -12,7 +12,7 @@
         android:id="@+id/template_gridview_mood"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:columnWidth="90dp"
+
         android:gravity="center"
         android:horizontalSpacing="10dp"
         android:numColumns="3"

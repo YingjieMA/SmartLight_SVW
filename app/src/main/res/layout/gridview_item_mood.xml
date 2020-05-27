@@ -8,10 +8,10 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/mood_border"
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_gravity="center"
             android:scaleType="fitXY"
-            android:layout_height="60dp" />
+            android:layout_height="70dp" />
         <LinearLayout
             android:layout_gravity="center"
             android:orientation="vertical"
