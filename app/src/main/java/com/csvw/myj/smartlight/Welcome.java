@@ -33,6 +33,8 @@ import java.util.concurrent.Executors;
 
 public class Welcome extends AppCompatActivity implements View.OnTouchListener {
     private final String TAG = "Welcome";
+    //存放接收到的数据
+    byte[][] attrs = new byte[20][8];
     Button button;
     CustomDialog customDialog;
     TextView connectText;
@@ -80,9 +82,26 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
 //                        };
                         exec.execute(tcpClient);
                         Message message  = Message.obtain();
-                        message.what = 2;
+                        message.what = 3;
                         message.obj = "客户端已连接";
                         myHandler.sendMessage(message);
+//                        new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                tcpClient.send("comm check");
+//                                try {
+//                                    Thread.sleep(1000);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }.run();
+//                        new Timer().schedule(new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                tcpClient.send("comm check");
+//                            }
+//                        },0,1000);
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -90,9 +109,6 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 }catch (Exception e){
                     Log.e("LoginThread", e.getMessage());
                 }
-
-
-
 
 //                exec.execute(new Runnable() {
 //                    @Override
@@ -120,12 +136,24 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
         connectText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exec.execute(new Runnable() {
+                new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        tcpClient.send("hello Mr. Song");
+                        tcpClient.send("comm check");
                     }
-                });
+                },0,1000);
+//                new Timer().schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        tcpClient.send("Comm check");
+//                    }
+//                },0,1000);
+//                exec.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        tcpClient.send("comm check");
+//                    }
+//                });
             }
         });
         customDialog = builder.create();
@@ -206,8 +234,14 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 switch (msg.what){
                     case 1:
                         Log.i(TAG,"收到："+ msg.obj.toString());
+                        if (msg.arg1 == 1){
+//                            Toast.makeText()
+                        }
                         break;
                     case 2:
+                        Log.i(TAG,"收到："+ msg.obj.toString());
+                        break;
+                    case 3:
                         Log.i(TAG,"发送："+ msg.obj.toString());
                         break;
                     case 5000:
@@ -226,17 +260,31 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
             String mAction = intent.getAction();
             switch (mAction){
                 case "tcpClientReceiver":
-                    String msg = intent.getStringExtra("tcpClientReceiver");
+//                    String msg = intent.getStringExtra("tcpClientReceiver");
+                    byte[] bytes = intent.getByteArrayExtra("tcpClientReceiver");
+                    SocketHelper.attrsArray(attrs,bytes);
+                    Log.i(TAG,""+ SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]));
+//                    Log.i(TAG,""+ SocketHelper.byte2int(bytes[160]));
+//                    Log.i(TAG,msg);
                     Message message = Message.obtain();
                     message.what = 1;
-                    message.obj = msg;
+                    message.obj = SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]);
                     myHandler.sendMessage(message);
+                    break;
+                case "tcpClientPermission":
+                    byte b = intent.getByteExtra("tcpClientPermission", (byte) 0x00);
+                    Log.i(TAG,""+ SocketHelper.byte2int(b));
+                    Message msgPermission = Message.obtain();
+                    msgPermission.what = 1;
+                    msgPermission.arg1 = SocketHelper.byte2int(b);
+                    myHandler.sendMessage(msgPermission);
                     break;
             }
         }
     }
     private void bindReceiver(){
         IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
+        intentFilter.addAction("tcpClientPermission");
         registerReceiver(myBroadcastReceiver,intentFilter);
     }
 

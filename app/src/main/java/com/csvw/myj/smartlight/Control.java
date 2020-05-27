@@ -1,13 +1,18 @@
 package com.csvw.myj.smartlight;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.Spannable;
@@ -31,10 +36,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class Control extends Activity implements OnColorChangedListener {
     final String TAG = "Control";
+    //存放接收到的数据
+    byte[][] attrs = new byte[20][8];
+    private final Control.MyHandler myHandler = new Control.MyHandler(this);
+    private Control.MyBroadcastReceiver myBroadcastReceiver = new Control.MyBroadcastReceiver();
     private ImageView carImage;
     private RelativeLayout rl;
     private ListView lvLights;
@@ -1172,5 +1184,55 @@ public class Control extends Activity implements OnColorChangedListener {
 //        });
 //
 //    }
+    private class MyHandler extends Handler {
+        private WeakReference<Control> mActivity;
 
+        MyHandler(Control activity) {
+            mActivity = new WeakReference<Control>(activity);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if(mActivity != null){
+                switch (msg.what){
+                    case 1:
+//                        Log.i(TAG,"收到："+ msg.obj.toString());
+                        break;
+                    case 2:
+                        Log.i(TAG,"发送："+ msg.obj.toString());
+                        break;
+                    case 5000:
+//                        timer.cancel();
+                        //tcpClient.closeSelf();
+                        break;
+                }
+            }
+        }
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String mAction = intent.getAction();
+            switch (mAction){
+                case "tcpClientReceiver":
+//                    String msg = intent.getStringExtra("tcpClientReceiver");
+                    byte[] bytes = intent.getByteArrayExtra("tcpClientReceiver");
+                    SocketHelper.attrsArray(attrs,bytes);
+                    Log.i(TAG,""+ SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]));
+                    Log.i(TAG,""+ SocketHelper.byte2int(bytes[160]));
+//                    Log.i(TAG,msg);
+                    Message message = Message.obtain();
+                    message.what = 1;
+//                    message.obj = msg;
+                    myHandler.sendMessage(message);
+                    break;
+            }
+        }
+    }
+    private void bindReceiver(){
+        IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
+        registerReceiver(myBroadcastReceiver,intentFilter);
+    }
 }

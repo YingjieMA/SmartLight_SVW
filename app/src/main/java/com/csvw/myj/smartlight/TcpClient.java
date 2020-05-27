@@ -1,6 +1,7 @@
 package com.csvw.myj.smartlight;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.io.DataInputStream;
@@ -9,6 +10,9 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TcpClient implements Runnable {
 
@@ -23,6 +27,7 @@ public class TcpClient implements Runnable {
     byte buff[] = new byte[4096];
     private String rcvMsg;
     private int rcvLen;
+    private String rcvMsgg;
 
     public TcpClient(String serverIP, int serverPort) {
         this.serverIP = serverIP;
@@ -48,18 +53,34 @@ public class TcpClient implements Runnable {
         }
         while (isRun){
             try {
+//                    new SocketHelper().commCheck(pw);
                 rcvLen = dis.read(buff);
                 if (rcvLen!=-1){
                     rcvMsg = new String(buff,0,rcvLen,"utf-8");
-                    Log.i(TAG,"run收到消息: "+rcvMsg);
+                    rcvMsgg = new SocketHelper().byte2hex(buff,rcvLen);
+                    Log.i(TAG,"run收到消息: "+ new SocketHelper().byte2hex(buff,rcvLen));
+//                    Log.i(TAG,"run收到消息: "+ new SocketHelper().arrPrint(new SocketHelper().byte2hex(buff,rcvLen)));
+                    Log.i(TAG,"run收到消息: "+ rcvMsg);
+                    if (rcvMsg.equals("accept")){
+                        new SocketHelper().commCheck(pw);
+                        continue;
+                    }
                     Intent intent = new Intent();
                     intent.setAction("tcpClientReceiver");
-                    intent.putExtra("tcpClientReceiver",rcvMsg);
+                    intent.setAction("tcpClientPermission");
+                    //接收到的消息拆分放入bundle
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id","s");
+                    intent.putExtra("tcpClientReceiver",buff);
+                    intent.putExtra("tcpClientPermission",buff[160]);
+//                    intent.putExtra("tcpClientReceiver",rcvMsgg);
                     Welcome.context.sendBroadcast(intent);
+//                    new SocketHelper().commCheck(pw);
                     if (rcvMsg.equals("QuitClient")){
                         isRun = false;
                     }
                 }
+
             }catch (NullPointerException e){
                 Log.i(TAG,"连接不到服务器");
                 try {
