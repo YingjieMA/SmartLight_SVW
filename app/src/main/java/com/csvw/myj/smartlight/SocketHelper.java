@@ -70,17 +70,22 @@ public class SocketHelper {
      */
 
     public static void attrsArray(byte[][] b,byte[] bytes){
-//        byte[][] b = new byte[20][];
-        //for (int i=0;i< 160;i++){
             for (int x = 0;x<20;x++){
                 for(int y= 0;y<8;y++){
                     b[x][y] = bytes[x*8+y];
                 }
             }
-        //}
-//        return b;
     }
 
+    public  static  byte[] attrsArray2D21D(byte[][] b){
+        byte[] bytes = new byte[160];
+        for (int x = 0;x<20;x++){
+            for(int y= 0;y<8;y++){
+                bytes[x*8+y]=b[x][y];
+            }
+        }
+        return bytes;
+    }
     /**
      * 1byte转int
      * @param b

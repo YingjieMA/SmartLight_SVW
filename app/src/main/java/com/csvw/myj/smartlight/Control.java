@@ -551,6 +551,7 @@ public class Control extends Activity implements OnColorChangedListener {
                     }
 
                 }
+
             });
             return viewItem;
         }
@@ -1235,4 +1236,5 @@ public class Control extends Activity implements OnColorChangedListener {
         IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
         registerReceiver(myBroadcastReceiver,intentFilter);
     }
+
 }

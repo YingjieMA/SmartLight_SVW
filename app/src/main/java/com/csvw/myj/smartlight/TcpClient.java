@@ -1,10 +1,12 @@
 package com.csvw.myj.smartlight;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -25,9 +27,11 @@ public class TcpClient implements Runnable {
     private DataInputStream dis;
     private Boolean isRun = true;
     byte buff[] = new byte[4096];
+    byte content[] = new byte[160];
     private String rcvMsg;
     private int rcvLen;
     private String rcvMsgg;
+    private DataOutputStream dop;
 
     public TcpClient(String serverIP, int serverPort) {
         this.serverIP = serverIP;
@@ -36,15 +40,34 @@ public class TcpClient implements Runnable {
     public void closeSelf(){
         isRun = false;
     }
+
+    /**
+     * 发送String类型
+     * @param msg
+     */
     public void send(String msg){
         pw.println(msg);
         pw.flush();
+    }
+
+    /**
+     * 发送byte[]类型
+     * @param content
+     */
+    public void sendByte(byte[] content){
+        try {
+            dop.write(content,0,content.length);
+            dop.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public void run() {
         try {
             socket = new Socket(serverIP, serverPort);
             socket.setSoTimeout(5000);
+            dop = new DataOutputStream(socket.getOutputStream());
             pw = new PrintWriter(socket.getOutputStream(),true);
             is = socket.getInputStream();
             dis = new DataInputStream(is);
@@ -70,9 +93,11 @@ public class TcpClient implements Runnable {
                     intent.setAction("tcpClientPermission");
                     //接收到的消息拆分放入bundle
                     Bundle bundle = new Bundle();
-                    bundle.putString("id","s");
-                    intent.putExtra("tcpClientReceiver",buff);
-                    intent.putExtra("tcpClientPermission",buff[160]);
+                    bundle.putByte("permission",buff[160]);
+                    bundle.putByteArray("attrs",buff);
+//                    intent.putExtra("tcpClientReceiver",buff);
+//                    intent.putExtra("tcpClientPermission",buff[160]);
+                    intent.putExtra("tcpClientPermission",bundle);
 //                    intent.putExtra("tcpClientReceiver",rcvMsgg);
                     Welcome.context.sendBroadcast(intent);
 //                    new SocketHelper().commCheck(pw);
@@ -101,6 +126,7 @@ public class TcpClient implements Runnable {
 
         try {
             pw.close();
+            dop.close();
             is.close();
             dis.close();
             socket.close();

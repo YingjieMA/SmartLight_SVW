@@ -48,6 +48,12 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
     private MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
     private Timer timer;
     private MyTimerTask task;
+    private int permission=2;
+
+
+    public static TcpClient getTcpClient() {
+        return tcpClient;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,24 +142,19 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
         connectText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        tcpClient.send("comm check");
-                    }
-                },0,1000);
+
 //                new Timer().schedule(new TimerTask() {
 //                    @Override
 //                    public void run() {
 //                        tcpClient.send("Comm check");
 //                    }
 //                },0,1000);
-//                exec.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        tcpClient.send("comm check");
-//                    }
-//                });
+                exec.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        tcpClient.sendByte(SocketHelper.attrsArray2D21D(attrs));
+                    }
+                });
             }
         });
         customDialog = builder.create();
@@ -211,7 +212,6 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 }
                 break;
 
-
             case MotionEvent.ACTION_UP:
                 if(v.getId() == R.id.start_btn){
                     v.setScaleX(1);
@@ -233,9 +233,11 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
             if(mActivity != null){
                 switch (msg.what){
                     case 1:
-                        Log.i(TAG,"收到："+ msg.obj.toString());
+                        Log.i(TAG,"收到："+ msg.arg1);
                         if (msg.arg1 == 1){
-//                            Toast.makeText()
+                            Toast.makeText(getApplicationContext(),"有控制权，操作者模式",Toast.LENGTH_SHORT).show();
+                        }else if(msg.arg1 == 0){
+                            Toast.makeText(getApplicationContext(),"无控制权，观看者模式",Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case 2:
@@ -261,23 +263,33 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
             switch (mAction){
                 case "tcpClientReceiver":
 //                    String msg = intent.getStringExtra("tcpClientReceiver");
+
                     byte[] bytes = intent.getByteArrayExtra("tcpClientReceiver");
                     SocketHelper.attrsArray(attrs,bytes);
                     Log.i(TAG,""+ SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]));
 //                    Log.i(TAG,""+ SocketHelper.byte2int(bytes[160]));
 //                    Log.i(TAG,msg);
                     Message message = Message.obtain();
-                    message.what = 1;
+                    message.what = 2;
                     message.obj = SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]);
                     myHandler.sendMessage(message);
                     break;
                 case "tcpClientPermission":
-                    byte b = intent.getByteExtra("tcpClientPermission", (byte) 0x00);
+                    Bundle bundle =intent.getBundleExtra("tcpClientPermission");
+                    byte b = bundle.getByte("permission");
+                    byte[] attrsRcv = bundle.getByteArray("attrs");
+                    SocketHelper.attrsArray(attrs,attrsRcv);
+                    Log.i(TAG,""+ SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]));
+//                    byte b = intent.getByteExtra("tcpClientPermission", (byte) 0x00);
                     Log.i(TAG,""+ SocketHelper.byte2int(b));
-                    Message msgPermission = Message.obtain();
-                    msgPermission.what = 1;
-                    msgPermission.arg1 = SocketHelper.byte2int(b);
-                    myHandler.sendMessage(msgPermission);
+
+                    if (SocketHelper.byte2int(b) != permission){
+                        Message msgPermission = Message.obtain();
+                        msgPermission.what = 1;
+                        msgPermission.arg1 = SocketHelper.byte2int(b);
+                        myHandler.sendMessage(msgPermission);
+                    }
+                    permission =  SocketHelper.byte2int(b);
                     break;
             }
         }
