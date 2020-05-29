@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.csvw.myj.smartlight.utils.Constants;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -33,10 +35,28 @@ public class TcpClient implements Runnable {
     private String rcvMsgg;
     private DataOutputStream dop;
 
-    public TcpClient(String serverIP, int serverPort) {
+    private static TcpClient instance;
+    private TcpClient(String serverIP, int serverPort) {
         this.serverIP = serverIP;
         this.serverPort = serverPort;
     }
+
+    /**
+     * 单例工厂
+     * @return
+     */
+    public static synchronized TcpClient getInstance(){
+        if(instance==null){
+            instance = new TcpClient(Constants.SERVER_IP,Constants.SERVER_PORT);
+        }
+        return instance;
+    }
+
+
+//    public TcpClient(String serverIP, int serverPort) {
+//        this.serverIP = serverIP;
+//        this.serverPort = serverPort;
+//    }
     public void closeSelf(){
         isRun = false;
     }
@@ -90,7 +110,7 @@ public class TcpClient implements Runnable {
                     }
                     Intent intent = new Intent();
                     intent.setAction("tcpClientReceiver");
-                    intent.setAction("tcpClientPermission");
+                    intent.setAction ("tcpClientPermission");
                     //接收到的消息拆分放入bundle
                     Bundle bundle = new Bundle();
                     bundle.putByte("permission",buff[160]);

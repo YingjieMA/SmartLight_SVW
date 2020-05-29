@@ -79,7 +79,8 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 try {
                     try{
                         checkTimeOut();
-                        tcpClient = new TcpClient(Constants.SERVER_IP,Constants.SERVER_PORT);
+                        tcpClient = TcpClient.getInstance();
+//                        tcpClient = new TcpClient(Constants.SERVER_IP,Constants.SERVER_PORT);
 //                        new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -316,5 +317,11 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
         }catch(Exception e){
             Log.e("timer", e.getMessage());
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tcpClient.closeSelf();
     }
 }

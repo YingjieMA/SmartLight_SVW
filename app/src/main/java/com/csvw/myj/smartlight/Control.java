@@ -1236,5 +1236,10 @@ public class Control extends Activity implements OnColorChangedListener {
         IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
         registerReceiver(myBroadcastReceiver,intentFilter);
     }
+    //单例调用
+    private void sdsd(){
+        TcpClient tcpClient1 = TcpClient.getInstance();
+    }
+
 
 }
