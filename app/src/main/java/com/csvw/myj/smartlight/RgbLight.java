@@ -18,7 +18,7 @@ public class RgbLight extends Light {
         this.intenseValue = intenseValue;
     }
 
-    public RgbLight(String id, String name, String type, Boolean state, int rValue, int gValue, int bValue, int intenseValue) {
+    public RgbLight(int id, String name, String type, Boolean state, int rValue, int gValue, int bValue, int intenseValue) {
         super(id, name, type, state);
         this.rValue = rValue;
         this.gValue = gValue;

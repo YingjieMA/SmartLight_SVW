@@ -20,7 +20,7 @@ public class SmartLight extends RgbLight {
         this.animation = animation;
     }
 
-    public SmartLight(String id, String name, String type, Boolean state, int rValue, int gValue, int bValue, int intenseValue, String animation) {
+    public SmartLight(int id, String name, String type, Boolean state, int rValue, int gValue, int bValue, int intenseValue, String animation) {
         super(id, name, type, state, rValue, gValue, bValue, intenseValue);
         this.animation = animation;
     }

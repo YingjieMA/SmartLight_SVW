@@ -196,6 +196,8 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Welcome.this,Control.class);
+                intent.setAction("permission");
+                intent.putExtra("permission",permission);
                 startActivity(intent);
                 finish();
             }
@@ -262,21 +264,21 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
         public void onReceive(Context context, Intent intent) {
             String mAction = intent.getAction();
             switch (mAction){
+//                case "tcpClientReceiver":
+////                    String msg = intent.getStringExtra("tcpClientReceiver");
+//
+//                    byte[] bytes = intent.getByteArrayExtra("tcpClientReceiver");
+//                    SocketHelper.attrsArray(attrs,bytes);
+//                    Log.i(TAG,""+ SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]));
+////                    Log.i(TAG,""+ SocketHelper.byte2int(bytes[160]));
+////                    Log.i(TAG,msg);
+//                    Message message = Message.obtain();
+//                    message.what = 2;
+//                    message.obj = SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]);
+//                    myHandler.sendMessage(message);
+//                    break;
                 case "tcpClientReceiver":
-//                    String msg = intent.getStringExtra("tcpClientReceiver");
-
-                    byte[] bytes = intent.getByteArrayExtra("tcpClientReceiver");
-                    SocketHelper.attrsArray(attrs,bytes);
-                    Log.i(TAG,""+ SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]));
-//                    Log.i(TAG,""+ SocketHelper.byte2int(bytes[160]));
-//                    Log.i(TAG,msg);
-                    Message message = Message.obtain();
-                    message.what = 2;
-                    message.obj = SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]);
-                    myHandler.sendMessage(message);
-                    break;
-                case "tcpClientPermission":
-                    Bundle bundle =intent.getBundleExtra("tcpClientPermission");
+                    Bundle bundle =intent.getBundleExtra("tcpClientReceiver");
                     byte b = bundle.getByte("permission");
                     byte[] attrsRcv = bundle.getByteArray("attrs");
                     SocketHelper.attrsArray(attrs,attrsRcv);
@@ -322,6 +324,6 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        tcpClient.closeSelf();
+//        tcpClient.closeSelf();
     }
 }

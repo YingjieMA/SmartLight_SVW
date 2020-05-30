@@ -3,7 +3,7 @@ package com.csvw.myj.smartlight;
 public class Light implements Comparable<Light> {
 
     // 灯泡id
-    private String id;
+    private int id;
     // 灯泡名称
     private String name;
     // 类型
@@ -14,7 +14,7 @@ public class Light implements Comparable<Light> {
         this.state = state;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -30,7 +30,7 @@ public class Light implements Comparable<Light> {
         return state;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -45,7 +45,7 @@ public class Light implements Comparable<Light> {
     public Light() {
     }
 
-    public Light(String id, String name, String type, Boolean state) {
+    public Light(int id, String name, String type, Boolean state) {
         this.id = id;
         this.name = name;
         this.type = type;

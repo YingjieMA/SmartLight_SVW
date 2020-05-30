@@ -16,7 +16,7 @@ public class SocketHelper {
 
 
 
-    public void commCheck(final PrintWriter pw) throws IOException {
+    public static void commCheck(final PrintWriter pw) throws IOException {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -32,7 +32,7 @@ public class SocketHelper {
      * @param length
      * @return
      */
-    public String byte2hex(byte[] buffer,int length){
+    public static String byte2hex(byte[] buffer,int length){
         String h = "";
         for (int i =0; i<length;i++){
             String temp = Integer.toHexString(buffer[i]&0xFF);
@@ -115,4 +115,7 @@ public class SocketHelper {
 //
 //        return result;
 //    }
+    public static void LightAttrsChange(){
+
+    }
 }

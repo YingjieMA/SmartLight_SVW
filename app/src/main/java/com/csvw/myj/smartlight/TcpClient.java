@@ -100,24 +100,26 @@ public class TcpClient implements Runnable {
                 rcvLen = dis.read(buff);
                 if (rcvLen!=-1){
                     rcvMsg = new String(buff,0,rcvLen,"utf-8");
-                    rcvMsgg = new SocketHelper().byte2hex(buff,rcvLen);
-                    Log.i(TAG,"run收到消息: "+ new SocketHelper().byte2hex(buff,rcvLen));
+                    rcvMsgg = SocketHelper.byte2hex(buff,rcvLen);
+                    Log.i(TAG,"run收到消息: "+ SocketHelper.byte2hex(buff,rcvLen));
 //                    Log.i(TAG,"run收到消息: "+ new SocketHelper().arrPrint(new SocketHelper().byte2hex(buff,rcvLen)));
                     Log.i(TAG,"run收到消息: "+ rcvMsg);
                     if (rcvMsg.equals("accept")){
-                        new SocketHelper().commCheck(pw);
+                        SocketHelper.commCheck(pw);
                         continue;
                     }
                     Intent intent = new Intent();
                     intent.setAction("tcpClientReceiver");
-                    intent.setAction ("tcpClientPermission");
+//                    intent.setAction ("tcpClientPermission");
                     //接收到的消息拆分放入bundle
                     Bundle bundle = new Bundle();
                     bundle.putByte("permission",buff[160]);
-                    bundle.putByteArray("attrs",buff);
+                    System.arraycopy(buff,0,content,0,160);
+                    bundle.putByteArray("attrs",content);
 //                    intent.putExtra("tcpClientReceiver",buff);
 //                    intent.putExtra("tcpClientPermission",buff[160]);
-                    intent.putExtra("tcpClientPermission",bundle);
+//                    intent.putExtra("tcpClientPermission",bundle);
+                    intent.putExtra("tcpClientReceiver",bundle);
 //                    intent.putExtra("tcpClientReceiver",rcvMsgg);
                     Welcome.context.sendBroadcast(intent);
 //                    new SocketHelper().commCheck(pw);

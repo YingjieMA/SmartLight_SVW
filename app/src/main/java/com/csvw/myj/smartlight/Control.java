@@ -39,11 +39,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Control extends Activity implements OnColorChangedListener {
     final String TAG = "Control";
     //存放接收到的数据
+    byte[] attrsRvcPre = new byte[160];
     byte[][] attrs = new byte[20][8];
     private final Control.MyHandler myHandler = new Control.MyHandler(this);
     private Control.MyBroadcastReceiver myBroadcastReceiver = new Control.MyBroadcastReceiver();
@@ -52,7 +54,7 @@ public class Control extends Activity implements OnColorChangedListener {
     private ListView lvLights;
     private GridView gvTamplate;
     private List<Light> lightsList;
-    private List<Light> rgbLightsList;
+    private ArrayList<Light> rgbLightsList;
     private List<Light> smartLightsList;
     private List<ColorTemplate> colorTemplateList;
     private ImageView imageView1, imageView2, imageView3, imageView4;
@@ -88,6 +90,7 @@ public class Control extends Activity implements OnColorChangedListener {
 
     LinearLayout linearLayout;
     private ImageView imageView5;
+    private int permission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +132,12 @@ public class Control extends Activity implements OnColorChangedListener {
             }
         });
 
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        if(action.equals("permission")){
+            permission = intent.getIntExtra("permission",1);
+            Log.i(TAG,"Permission = "+ permission);
+        }
     }
 
     //单击事件监听器
@@ -159,7 +168,7 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView5.setImageResource(R.drawable.mood_btn);
                     View listView = findViewById(R.id.linearlayout1);
                     if (null != listView) {
-                        initialize(rgbLightsList);
+                        initialize((rgbLightsList));
                     }
                     View hiddenView = findViewById(R.id.cycle_layout);
                     if (null != hiddenView) {
@@ -212,6 +221,8 @@ public class Control extends Activity implements OnColorChangedListener {
         this.lvLights.setAdapter(adapter);
 
     }
+
+
 
     /**
      * 初始化Mood
@@ -549,7 +560,6 @@ public class Control extends Activity implements OnColorChangedListener {
                             finalViewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                         }
                     }
-
                 }
 
             });
@@ -1197,10 +1207,15 @@ public class Control extends Activity implements OnColorChangedListener {
             if(mActivity != null){
                 switch (msg.what){
                     case 1:
-//                        Log.i(TAG,"收到："+ msg.obj.toString());
+                        Log.i(TAG,"收到："+ msg.arg1);
+                        if (msg.arg1 == 1){
+                            Toast.makeText(getApplicationContext(),"有控制权，操作者模式",Toast.LENGTH_SHORT).show();
+                        }else if(msg.arg1 == 0){
+                            Toast.makeText(getApplicationContext(),"无控制权，观看者模式",Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     case 2:
-                        Log.i(TAG,"发送："+ msg.obj.toString());
+                        Log.i(TAG,"收到："+ msg.getData().getBundle("lightAttrs"));
                         break;
                     case 5000:
 //                        timer.cancel();
@@ -1218,16 +1233,29 @@ public class Control extends Activity implements OnColorChangedListener {
             String mAction = intent.getAction();
             switch (mAction){
                 case "tcpClientReceiver":
-//                    String msg = intent.getStringExtra("tcpClientReceiver");
-                    byte[] bytes = intent.getByteArrayExtra("tcpClientReceiver");
-                    SocketHelper.attrsArray(attrs,bytes);
+                    Bundle bundle =intent.getBundleExtra("tcpClientReceiver");
+                    byte b = bundle.getByte("permission");
+                    byte[] attrsRcv = bundle.getByteArray("attrs");
+                    SocketHelper.attrsArray(attrs,attrsRcv);
                     Log.i(TAG,""+ SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]));
-                    Log.i(TAG,""+ SocketHelper.byte2int(bytes[160]));
-//                    Log.i(TAG,msg);
-                    Message message = Message.obtain();
-                    message.what = 1;
-//                    message.obj = msg;
-                    myHandler.sendMessage(message);
+                    Log.i(TAG,""+ SocketHelper.byte2int(b));
+
+                    if (SocketHelper.byte2int(b) != permission ){
+                        Message msgPermission = Message.obtain();
+                        msgPermission.what = 1;
+                        msgPermission.arg1 = SocketHelper.byte2int(b);
+                        myHandler.sendMessage(msgPermission);
+                    }
+                    permission =  SocketHelper.byte2int(b);
+                    if (attrsRcv != attrsRvcPre){
+                        Message msgAttrs = Message.obtain();
+                        msgAttrs.what = 2;
+                        Bundle msgBundle = new Bundle();
+                        bundle.putByteArray("lightAttrs",attrsRcv);
+                        msgAttrs.setData(bundle);
+                        myHandler.sendMessage(msgAttrs);
+                    }
+                    attrsRvcPre = attrsRcv;
                     break;
             }
         }
