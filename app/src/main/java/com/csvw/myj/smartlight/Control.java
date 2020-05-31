@@ -41,6 +41,8 @@ import androidx.annotation.NonNull;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Control extends Activity implements OnColorChangedListener {
     final String TAG = "Control";
@@ -91,6 +93,9 @@ public class Control extends Activity implements OnColorChangedListener {
     LinearLayout linearLayout;
     private ImageView imageView5;
     private int permission;
+    private GetLightList getLightList;
+    //线程池
+    ExecutorService exec = Executors.newCachedThreadPool();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +112,10 @@ public class Control extends Activity implements OnColorChangedListener {
         this.lvLights = view.findViewById(R.id.lvLights);
         this.rl.addView(view);
         //获取灯List
-        lightsList = new GetLightList().getWhiteLampList();
-        rgbLightsList = new GetLightList().getRgbLampList();
-        smartLightsList = new GetLightList().getSmartLightList();
+        getLightList = new GetLightList();
+        lightsList = getLightList.getWhiteLampList();
+        rgbLightsList = getLightList.getRgbLampList();
+        smartLightsList = getLightList.getSmartLightList();
         this.initialize(lightsList);
         imageView1 = findViewById(R.id.white_lamp_btn);
         imageView2 = findViewById(R.id.rgb_lamp_btn);
@@ -1264,9 +1270,18 @@ public class Control extends Activity implements OnColorChangedListener {
         IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
         registerReceiver(myBroadcastReceiver,intentFilter);
     }
-    //单例调用
-    private void sdsd(){
-        TcpClient tcpClient1 = TcpClient.getInstance();
+
+    /**
+     * 发送转为btye[]的LightList
+     */
+    private void sendBtyesData2HW(){
+        final TcpClient tcpClient = TcpClient.getInstance();
+        exec.execute(new Runnable() {
+            @Override
+            public void run() {
+                tcpClient.sendByte(SocketHelper.attrsArray2D21D(getLightList.setLightList2Byte()));
+            }
+        });
     }
 
 

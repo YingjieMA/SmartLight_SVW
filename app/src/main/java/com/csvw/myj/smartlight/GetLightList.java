@@ -149,16 +149,26 @@ public class GetLightList {
     public void setByte2LightList(int id,int state,int online, int diagose,int r,int g, int b, int i){
     }
 
-    public void setLightList2Byte(){
+    /**
+     * 将LightList转为二维数组
+     * @return
+     */
+    public byte[][] setLightList2Byte(){
         byte[][] attrs = new byte[20][8];
         for (Light light : rgbLampList) {
             RgbLight rgbLight = (RgbLight) light;
             attrs[rgbLight.getId()-1][0] = (byte) rgbLight.getId();
-            if (light.getState()==true){
+            if (rgbLight.getState()){
                 attrs[rgbLight.getId()-1][1] = (byte) 0xff;
             }else{attrs[rgbLight.getId()-1][1] = (byte) 0x00;}
-
+            if (rgbLight.getOnline()){attrs[rgbLight.getId()-1][2]= (byte) 0xff;}else {attrs[rgbLight.getId()-1][2] = (byte) 0x00;}
+            if (rgbLight.getDiagnose()){attrs[rgbLight.getId()-1][3]= (byte) 0xff;}else {attrs[rgbLight.getId()-1][3] = (byte) 0x00;}
+            attrs[rgbLight.getId()-1][4] = (byte) rgbLight.getrValue();
+            attrs[rgbLight.getId()-1][5] = (byte) rgbLight.getgValue();
+            attrs[rgbLight.getId()-1][6] = (byte) rgbLight.getbValue();
+            attrs[rgbLight.getId()-1][7] = (byte) rgbLight.getIntenseValue();
         }
+        return attrs;
     }
 
 

@@ -10,6 +10,8 @@ public class Light implements Comparable<Light> {
     private String type;
     // 灯的状态
     private Boolean state;
+    private Boolean online;
+    private Boolean diagnose;
     public void setState(Boolean state) {
         this.state = state;
     }
@@ -43,6 +45,31 @@ public class Light implements Comparable<Light> {
     }
 
     public Light() {
+    }
+
+    public Boolean getOnline() {
+        return online;
+    }
+
+    public void setOnline(Boolean online) {
+        this.online = online;
+    }
+
+    public Boolean getDiagnose() {
+        return diagnose;
+    }
+
+    public void setDiagnose(Boolean diagnose) {
+        this.diagnose = diagnose;
+    }
+
+    public Light(int id, String name, String type, Boolean state, Boolean online, Boolean diagnose) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.state = state;
+        this.online = online;
+        this.diagnose = diagnose;
     }
 
     public Light(int id, String name, String type, Boolean state) {
