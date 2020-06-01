@@ -25,6 +25,13 @@ public class RgbLight extends Light {
         this.bValue = bValue;
         this.intenseValue = intenseValue;
     }
+    public RgbLight(int id, String name, String type, Boolean state,Boolean online,Boolean diagnose, int rValue, int gValue, int bValue, int intenseValue) {
+        super(id, name, type, state, online, diagnose);
+        this.rValue = rValue;
+        this.gValue = gValue;
+        this.bValue = bValue;
+        this.intenseValue = intenseValue;
+    }
 
     public int getrValue() {
         return rValue;

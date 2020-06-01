@@ -58,36 +58,36 @@ public class GetLightList {
 
     private void init(){
         this.allList = allList;
-        light1 = new Light(101,"Reading Lamp","white",false);
-        light2 = new Light(102,"Footwell Lamp_vo.","white",true);
-        light3 = new Light(103,"Footwell Lamp_hi.","white",true);
-        light4 = new Light(104,"MIKO Lamp_up","white",false);
-        light5 = new Light(105,"MIKO Lamp_down","white",false);
-        light6 = new Light(106,"Makeup Lamp","white",false);
-        light7 = new Light(107,"Door Handle Lamp","white",false);
-        light8 = new Light(108,"Door Opener Lamp","white",false);
-        light9 = new Light(109,"Rear Reading Lamp","white",false);
-        light10 = new Light(110,"Glove Box Lamp","white",false);
-        rgbLight1 = new RgbLight(1,"IP Decor Lamp","rgb",true,255,0,0,100);
-        rgbLight2 = new RgbLight(2,"Starry Lamp","rgb",false,255,255,255,100);
-        rgbLight3 = new RgbLight(3,"Door Decor Lamp_vo.","rgb",false,255,255,255,100);
-        rgbLight4 = new RgbLight(4,"Door Decor Lamp_hi.","rgb",false,255,255,255,100);
-        rgbLight5 = new RgbLight(5,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight6 = new RgbLight(6,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight7 = new RgbLight(7,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight8 = new RgbLight(8,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight9 = new RgbLight(9,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight10 = new RgbLight(10,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight11 = new RgbLight(11,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight12 = new RgbLight(12,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight13 = new RgbLight(13,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight14 = new RgbLight(14,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight15 = new RgbLight(15,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight16 = new RgbLight(16,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight17 = new RgbLight(17,"Door Handle Lamp","rgb",false,255,255,255,100);rgbLight5 = new RgbLight(5,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight18 = new RgbLight(18,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight19 = new RgbLight(19,"Door Handle Lamp","rgb",false,255,255,255,100);
-        rgbLight20 = new RgbLight(20,"Door Handle Lamp","rgb",false,255,255,255,100);
+        light1 = new Light(101,"Reading Lamp","white",true,true,true);
+        light2 = new Light(102,"Footwell Lamp_vo.","white",true,true,true);
+        light3 = new Light(103,"Footwell Lamp_hi.","white",true,true,true);
+        light4 = new Light(104,"MIKO Lamp_up","white",false,true,true);
+        light5 = new Light(105,"MIKO Lamp_down","white",false,true,true);
+        light6 = new Light(106,"Makeup Lamp","white",false,true,true);
+        light7 = new Light(107,"Door Handle Lamp","white",false,true,true);
+        light8 = new Light(108,"Door Opener Lamp","white",false,true,true);
+        light9 = new Light(109,"Rear Reading Lamp","white",false,true,true);
+        light10 = new Light(110,"Glove Box Lamp","white",false,true,true);
+        rgbLight1 = new RgbLight(1,"IP Decor Lamp","rgb",true,true,true,255,0,0,100);
+        rgbLight2 = new RgbLight(2,"Starry Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight3 = new RgbLight(3,"Door Decor Lamp_vo.","rgb",false,true,true,255,255,255,100);
+        rgbLight4 = new RgbLight(4,"Door Decor Lamp_hi.","rgb",false,true,true,255,255,255,100);
+        rgbLight5 = new RgbLight(5,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight6 = new RgbLight(6,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight7 = new RgbLight(7,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight8 = new RgbLight(8,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight9 = new RgbLight(9,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight10 = new RgbLight(10,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight11 = new RgbLight(11,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight12 = new RgbLight(12,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight13 = new RgbLight(13,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight14 = new RgbLight(14,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight15 = new RgbLight(15,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight16 = new RgbLight(16,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight17 = new RgbLight(17,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight18 = new RgbLight(18,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight19 = new RgbLight(19,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
+        rgbLight20 = new RgbLight(20,"Door Handle Lamp","rgb",false,true,true,255,255,255,100);
 
         smartLight1 = new SmartLight(201,"Smart Light","smart",false,255,255,255,100,"sport");
         allList.add(light1);
@@ -124,7 +124,7 @@ public class GetLightList {
         //分类
         for (Light light : allList) {
             if (light.getType()=="rgb"){
-                rgbLampList.add((RgbLight) light);
+                rgbLampList.add(light);
             }else if (light.getType()=="white"){
                 whiteLampList.add(light);
             }else smartLightList.add(light);
@@ -135,18 +135,23 @@ public class GetLightList {
         this.allList = allList;
     }
 
+
     /**
-     * 将数组转为灯头属性
-     * @param id
-     * @param state
-     * @param online
-     * @param diagose
-     * @param r
-     * @param g
-     * @param b
-     * @param i
+     * 将二维数组转为LightList
+     * @param attrs
      */
-    public void setByte2LightList(int id,int state,int online, int diagose,int r,int g, int b, int i){
+    public void setByte2LightList(byte[][] attrs){
+        for (Light light : rgbLampList) {
+            RgbLight rgbLight = (RgbLight) light;
+            int id =  rgbLight.getId();
+            if (attrs[id-1][1]==0xff){rgbLight.setState(true);}else {rgbLight.setState(false);}
+            if (attrs[id-1][2]==0xff){rgbLight.setOnline(true);}else {rgbLight.setOnline(false);}
+            if (attrs[id-1][3]==0xff){rgbLight.setDiagnose(true);}else {rgbLight.setDiagnose(false);}
+            rgbLight.setrValue(attrs[id-1][4]);
+            rgbLight.setgValue(attrs[id-1][5]);
+            rgbLight.setbValue(attrs[id-1][6]);
+            rgbLight.setIntenseValue(attrs[id-1][7]);
+        }
     }
 
     /**

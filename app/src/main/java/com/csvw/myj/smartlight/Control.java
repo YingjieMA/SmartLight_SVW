@@ -502,20 +502,24 @@ public class Control extends Activity implements OnColorChangedListener {
             final Light le = lightsList.get(position);
             if (le.getType() == "white" || le.getType() == "smart") {
                 if (le.getState() == true) {
+//                    viewHolder.swBtn.setChecked(true);
                     addLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(Color.argb(255, 255, 255, 255));
                     viewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                 } else {
+//                    viewHolder.swBtn.setChecked(false);
                     removeLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(getColor(R.color.lightOff));
                     viewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                 }
             } else {
                 if (le.getState() == true) {
+//                    viewHolder.swBtn.setChecked(true);
                     addRGBLightView(le.getName(),Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                     viewHolder.relativeLayout.setBackgroundColor(Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                     viewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                 } else {
+//                    viewHolder.swBtn.setChecked(false);
                     removeRGBLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(getColor(R.color.lightOff));
                     viewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
@@ -537,6 +541,8 @@ public class Control extends Activity implements OnColorChangedListener {
 
                 }
             });
+            viewHolder.swBtn.setOnCheckedChangeListener(null);
+            viewHolder.swBtn.setChecked(lightsList.get(position).getState());
             viewHolder.relativeLayout.setOnTouchListener(onTouchListener);
             viewHolder.swBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -566,6 +572,8 @@ public class Control extends Activity implements OnColorChangedListener {
                             finalViewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                         }
                     }
+                    Log.i(TAG,SocketHelper.byte2hex(SocketHelper.attrsArray2D21D(getLightList.setLightList2Byte()),160));
+//                    notifyDataSetChanged();
                 }
 
             });
@@ -1221,7 +1229,13 @@ public class Control extends Activity implements OnColorChangedListener {
                         }
                         break;
                     case 2:
+                        /**
+                         * 收到信号，转为LightList,刷新列表
+                         */
                         Log.i(TAG,"收到："+ msg.getData().getBundle("lightAttrs"));
+                        SocketHelper.attrsArray(attrs,msg.getData().getByteArray("lightAttrs"));
+                        getLightList.setByte2LightList(attrs);
+                        adapter.notifyDataSetChanged();
                         break;
                     case 5000:
 //                        timer.cancel();
