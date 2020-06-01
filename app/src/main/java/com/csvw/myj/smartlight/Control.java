@@ -526,6 +526,7 @@ public class Control extends Activity implements OnColorChangedListener {
                 }
             }
             viewHolder.tvName.setText(le.getName());
+            viewHolder.swBtn.setOnCheckedChangeListener(null);
             viewHolder.swBtn.setChecked(le.getState());
             final ViewHolder finalViewHolder = viewHolder;
             if (le.getType() == "white") {
@@ -541,8 +542,6 @@ public class Control extends Activity implements OnColorChangedListener {
 
                 }
             });
-            viewHolder.swBtn.setOnCheckedChangeListener(null);
-            viewHolder.swBtn.setChecked(lightsList.get(position).getState());
             viewHolder.relativeLayout.setOnTouchListener(onTouchListener);
             viewHolder.swBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
