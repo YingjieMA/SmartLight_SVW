@@ -151,5 +151,4 @@ public class LightView extends ImageView {
         return outputBitmap;
     }
 
-
 }

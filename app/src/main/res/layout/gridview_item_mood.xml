@@ -8,21 +8,22 @@
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/mood_border"
-            android:layout_width="70dp"
+            android:layout_width="90dp"
             android:layout_gravity="center"
             android:scaleType="fitXY"
-            android:layout_height="70dp" />
+            android:layout_height="90dp" />
         <LinearLayout
             android:layout_gravity="center"
+            android:layout_margin="10dp"
             android:orientation="vertical"
+            android:contentDescription="@null"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/mood_templateimage"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center"
-                android:layout_margin="8dp"
                 android:contentDescription="@null"
                 android:scaleType="fitXY"
                 />

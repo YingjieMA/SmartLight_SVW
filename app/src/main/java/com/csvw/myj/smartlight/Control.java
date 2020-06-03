@@ -419,6 +419,9 @@ public class Control extends Activity implements OnColorChangedListener {
         g = light.getgValue();
         b = light.getbValue();
         Log.i("11", adapter.light.toString());
+        if (TcpClient.getInstance() != null) {
+            sendBtyesData2HW();
+        }
     }
 
     /**
@@ -500,26 +503,22 @@ public class Control extends Activity implements OnColorChangedListener {
             }
 
             final Light le = lightsList.get(position);
-            if (le.getType() == "white" || le.getType() == "smart") {
-                if (le.getState() == true) {
-//                    viewHolder.swBtn.setChecked(true);
+            if (le.getType().equals("white") || le.getType().equals("smart")) {
+                if (le.getState()) {
                     addLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(Color.argb(255, 255, 255, 255));
                     viewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                 } else {
-//                    viewHolder.swBtn.setChecked(false);
                     removeLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(getColor(R.color.lightOff));
                     viewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                 }
             } else {
-                if (le.getState() == true) {
-//                    viewHolder.swBtn.setChecked(true);
+                if (le.getState()) {
                     addRGBLightView(le.getName(),Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                     viewHolder.relativeLayout.setBackgroundColor(Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                     viewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                 } else {
-//                    viewHolder.swBtn.setChecked(false);
                     removeRGBLightView(le.getName());
                     viewHolder.relativeLayout.setBackgroundColor(getColor(R.color.lightOff));
                     viewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
@@ -546,6 +545,9 @@ public class Control extends Activity implements OnColorChangedListener {
             viewHolder.swBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (TcpClient.getInstance() != null) {
+                        sendBtyesData2HW();
+                    }
                     if (le.getType() == "white" || le.getType() == "smart") {
                         if (isChecked == true) {
                             le.setState(true);

@@ -138,6 +138,7 @@ public class GetLightList {
 
     /**
      * 将二维数组转为LightList
+     * ID, 开/关, ON/OFF Line, 故障诊断, R, G, B, I
      * @param attrs
      */
     public void setByte2LightList(byte[][] attrs){
@@ -156,6 +157,8 @@ public class GetLightList {
 
     /**
      * 将LightList转为二维数组
+     * ID, 开/关, R, G, B, I, Oxff, 0xff
+     * 后两位0xff为保留位
      * @return
      */
     public byte[][] setLightList2Byte(){
@@ -166,12 +169,12 @@ public class GetLightList {
             if (rgbLight.getState()){
                 attrs[rgbLight.getId()-1][1] = (byte) 0xff;
             }else{attrs[rgbLight.getId()-1][1] = (byte) 0x00;}
-            if (rgbLight.getOnline()){attrs[rgbLight.getId()-1][2]= (byte) 0xff;}else {attrs[rgbLight.getId()-1][2] = (byte) 0x00;}
-            if (rgbLight.getDiagnose()){attrs[rgbLight.getId()-1][3]= (byte) 0xff;}else {attrs[rgbLight.getId()-1][3] = (byte) 0x00;}
-            attrs[rgbLight.getId()-1][4] = (byte) rgbLight.getrValue();
-            attrs[rgbLight.getId()-1][5] = (byte) rgbLight.getgValue();
-            attrs[rgbLight.getId()-1][6] = (byte) rgbLight.getbValue();
-            attrs[rgbLight.getId()-1][7] = (byte) rgbLight.getIntenseValue();
+            attrs[rgbLight.getId()-1][2] = (byte) rgbLight.getrValue();
+            attrs[rgbLight.getId()-1][3] = (byte) rgbLight.getgValue();
+            attrs[rgbLight.getId()-1][4] = (byte) rgbLight.getbValue();
+            attrs[rgbLight.getId()-1][5] = (byte) rgbLight.getIntenseValue();
+            attrs[rgbLight.getId()-1][6] = (byte) 0xff;
+            attrs[rgbLight.getId()-1][7] = (byte) 0xff;
         }
         return attrs;
     }
