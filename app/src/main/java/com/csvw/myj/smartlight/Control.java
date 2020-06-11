@@ -1,5 +1,6 @@
 package com.csvw.myj.smartlight;
 
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -101,6 +102,7 @@ public class Control extends Activity implements OnColorChangedListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
+        bindReceiver();
         //添加灯View
         frameLayout = findViewById(R.id.frameLayout);
 
@@ -1272,7 +1274,7 @@ public class Control extends Activity implements OnColorChangedListener {
                         Message msgAttrs = Message.obtain();
                         msgAttrs.what = 2;
                         Bundle msgBundle = new Bundle();
-                        bundle.putByteArray("lightAttrs",attrsRcv);
+                        msgBundle.putByteArray("lightAttrs",attrsRcv);
                         msgAttrs.setData(bundle);
                         myHandler.sendMessage(msgAttrs);
                     }

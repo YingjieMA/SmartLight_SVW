@@ -14,4 +14,6 @@ public class Constants {
     //网络相关常量
     public static final String SERVER_IP="192.168.10.2";
     public static final int SERVER_PORT=8080;
+    public static final String SSID="192.168.10.2";
+    public static final String WIFI_PASSWORD="192.168.10.2";
 }

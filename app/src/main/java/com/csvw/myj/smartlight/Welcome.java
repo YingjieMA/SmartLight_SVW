@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -76,6 +77,9 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
                 dialog.dismiss();
                 imageViewPositive = customDialog.findViewById(R.id.positiveTextView);
                 //设置你的操作事项
+                WifiUtils wifiUtils = new WifiUtils(context);
+                wifiUtils.openWifi();
+                wifiUtils.connectWifiPws(Constants.SSID,Constants.WIFI_PASSWORD);
                 try {
                     try{
                         checkTimeOut();
