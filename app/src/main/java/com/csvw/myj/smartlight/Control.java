@@ -97,6 +97,7 @@ public class Control extends Activity implements OnColorChangedListener {
     private GetLightList getLightList;
     //线程池
     ExecutorService exec = Executors.newCachedThreadPool();
+    private ArrayList<Light> freedomRgbLightList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +151,12 @@ public class Control extends Activity implements OnColorChangedListener {
 
     //单击事件监听器
     View.OnClickListener l = new View.OnClickListener() {
+
+
+        private View hiddenView;
+        private View listView;
+        private View hiddenView2;
+
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -161,9 +168,17 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView5.setImageResource(R.drawable.mood_btn);
                     initialize(lightsList);
                     hiddenView = findViewById(R.id.cycle_layout);
+                    hiddenView2 = findViewById(R.id.moodTableView);
                     if (null != hiddenView) {
                         ViewGroup parent = (ViewGroup) hiddenView.getParent();
                         parent.removeView(hiddenView);
+                        rl.addView(view);
+                        initialize(lightsList);
+                    }else if (null != hiddenView2){
+                        ViewGroup parent = (ViewGroup) hiddenView2.getParent();
+                        parent.removeView(hiddenView2);
+                        view = inflater.inflate(R.layout.activity_epel, rl, false);
+                        lvLights = view.findViewById(R.id.lvLights);
                         rl.addView(view);
                         initialize(lightsList);
                     }
@@ -174,14 +189,22 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView3.setImageResource(R.drawable.smartlight_btn_2);
                     imageView4.setImageResource(R.drawable.setting_btn_2);
                     imageView5.setImageResource(R.drawable.mood_btn);
-                    View listView = findViewById(R.id.linearlayout1);
+                    listView = findViewById(R.id.linearlayout1);
+                    hiddenView2 = findViewById(R.id.moodTableView);
                     if (null != listView) {
                         initialize((rgbLightsList));
                     }
-                    View hiddenView = findViewById(R.id.cycle_layout);
+                    hiddenView = findViewById(R.id.cycle_layout);
                     if (null != hiddenView) {
                         ViewGroup parent = (ViewGroup) hiddenView.getParent();
                         parent.removeView(hiddenView);
+                        rl.addView(view);
+                        initialize(rgbLightsList);
+                    }else if (null != hiddenView2){
+                        ViewGroup parent = (ViewGroup) hiddenView2.getParent();
+                        parent.removeView(hiddenView2);
+                        view = inflater.inflate(R.layout.activity_epel, rl, false);
+                        lvLights = view.findViewById(R.id.lvLights);
                         rl.addView(view);
                         initialize(rgbLightsList);
                     }
@@ -193,6 +216,25 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView4.setImageResource(R.drawable.setting_btn_2);
                     imageView5.setImageResource(R.drawable.mood_btn);
                     Control.this.initialize(smartLightsList);
+                    listView = findViewById(R.id.linearlayout1);
+                    hiddenView2 = findViewById(R.id.moodTableView);
+                    if (null != listView) {
+                        initialize((rgbLightsList));
+                    }
+                    hiddenView = findViewById(R.id.cycle_layout);
+                    if (null != hiddenView) {
+                        ViewGroup parent = (ViewGroup) hiddenView.getParent();
+                        parent.removeView(hiddenView);
+                        rl.addView(view);
+                        initialize(rgbLightsList);
+                    }else if (null != hiddenView2){
+                        ViewGroup parent = (ViewGroup) hiddenView2.getParent();
+                        parent.removeView(hiddenView2);
+                        view = inflater.inflate(R.layout.activity_epel, rl, false);
+                        lvLights = view.findViewById(R.id.lvLights);
+                        rl.addView(view);
+                        initialize(smartLightsList);
+                    }
                     break;
                 case R.id.setting_btn:
                     imageView1.setImageResource(R.drawable.white_light_btn_2);
@@ -208,9 +250,15 @@ public class Control extends Activity implements OnColorChangedListener {
                     imageView4.setImageResource(R.drawable.setting_btn_2);
                     imageView5.setImageResource(R.drawable.mood_btn_blue);
                     hiddenView = findViewById(R.id.cycle_layout);
+                    hiddenView2 = findViewById(R.id.linearlayout1);
                     if (null != hiddenView) {
                         ViewGroup parent = (ViewGroup) hiddenView.getParent();
                         parent.removeView(hiddenView);
+                        view = inflater.inflate(R.layout.mood_table, rl, false);
+                        rl.addView(view);
+                        initializeMood(new GetMoodTemplateList().getAllList(),view);
+                    }else if(null != hiddenView2){
+                        rl.removeView(hiddenView2);
                         view = inflater.inflate(R.layout.mood_table, rl, false);
                         rl.addView(view);
                         initializeMood(new GetMoodTemplateList().getAllList(),view);
@@ -237,7 +285,7 @@ public class Control extends Activity implements OnColorChangedListener {
      * @param moodTemplateList
      */
     private void initializeMood(List<MoodTemplate> moodTemplateList,View view) {
-        moodDataAdapter = new MoodDataAdapter(this, moodTemplateList);
+        moodDataAdapter = new MoodDataAdapter(this, moodTemplateList,this);
         gvTamplate = view.findViewById(R.id.template_gridview_mood);
         this.gvTamplate.setAdapter(moodDataAdapter);
 
@@ -414,6 +462,8 @@ public class Control extends Activity implements OnColorChangedListener {
                         frameLayout.addView(doorDecorLampVo);
                         doorOpenerLampView=null;
                     }
+                    break;
+                default:
                     break;
             }
         }
@@ -1293,13 +1343,14 @@ public class Control extends Activity implements OnColorChangedListener {
      */
     private void sendBtyesData2HW(){
         final TcpClient tcpClient = TcpClient.getInstance();
-        exec.execute(new Runnable() {
-            @Override
-            public void run() {
-                tcpClient.sendByte(SocketHelper.attrsArray2D21D(getLightList.setLightList2Byte()));
-            }
-        });
+        if (null!=tcpClient){
+            exec.execute(new Runnable() {
+                @Override
+                public void run() {
+                    tcpClient.sendByte(SocketHelper.attrsArray2D21D(getLightList.setLightList2Byte()));
+                }
+            });
+        }
     }
-
 
 }

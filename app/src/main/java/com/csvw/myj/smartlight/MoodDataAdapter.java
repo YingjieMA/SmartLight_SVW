@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
@@ -24,8 +25,10 @@ import java.util.List;
 public class MoodDataAdapter extends BaseAdapter {
     private Context context;
     private List<MoodTemplate> dataList;
+    private OnColorChangedListener mListener;
 
-    public MoodDataAdapter(Context context, List<MoodTemplate> dataList) {
+    public MoodDataAdapter(Context context, List<MoodTemplate> dataList,OnColorChangedListener l) {
+        this.mListener = l;
         this.context = context;
         this.dataList = dataList;
     }
@@ -124,10 +127,9 @@ public class MoodDataAdapter extends BaseAdapter {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        v.setScaleX((float) 0.97);
-                        v.setScaleY((float) 0.97);
+                        v.setScaleX((float) 0.95);
+                        v.setScaleY((float) 0.95);
                         break;
-
                     case MotionEvent.ACTION_UP:
                         v.setScaleX(1);
                         v.setScaleY(1);
@@ -139,10 +141,18 @@ public class MoodDataAdapter extends BaseAdapter {
                 return false;
             }
         });
+        final ViewHolder finalViewHolder = viewHolder;
         viewHolder.frameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mListener.moodChanged((String) finalViewHolder.name.getText());
+            }
+        });
+        viewHolder.frameLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mListener.moodSave((String) finalViewHolder.name.getText());
+                return true;
             }
         });
         return itemView;
