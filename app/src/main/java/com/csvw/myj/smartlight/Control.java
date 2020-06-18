@@ -1279,16 +1279,18 @@ public class Control extends Activity implements OnColorChangedListener {
                             Toast.makeText(getApplicationContext(),"有控制权，操作者模式",Toast.LENGTH_SHORT).show();
                         }else if(msg.arg1 == 0){
                             Toast.makeText(getApplicationContext(),"无控制权，观看者模式",Toast.LENGTH_SHORT).show();
+                            rl.setOnClickListener(null);
                         }
                         break;
                     case 2:
                         /**
                          * 收到信号，转为LightList,刷新列表
                          */
-                        Log.i(TAG,"收到："+ msg.getData().getBundle("lightAttrs"));
-                        SocketHelper.attrsArray(attrs,msg.getData().getByteArray("lightAttrs"));
-                        getLightList.setByte2LightList(attrs);
-                        adapter.notifyDataSetChanged();
+//                        Log.i(TAG,"收到："+ msg.getData().getBundle("lightAttrs"));
+                        Log.i(TAG,"收到："+ msg.getData().getByteArray("lightAttrs"));
+//                        SocketHelper.attrsArray(attrs,msg.getData().getByteArray("lightAttrs"));
+//                        getLightList.setByte2LightList(attrs);
+//                        adapter.notifyDataSetChanged();
                         break;
                     case 5000:
 //                        timer.cancel();
@@ -1321,11 +1323,13 @@ public class Control extends Activity implements OnColorChangedListener {
                     }
                     permission =  SocketHelper.byte2int(b);
                     if (attrsRcv != attrsRvcPre){
+                        Log.i(TAG,"程序进入这里"+SocketHelper.byte2hex(attrsRcv,attrsRcv.length));
+
                         Message msgAttrs = Message.obtain();
                         msgAttrs.what = 2;
                         Bundle msgBundle = new Bundle();
                         msgBundle.putByteArray("lightAttrs",attrsRcv);
-                        msgAttrs.setData(bundle);
+                        msgAttrs.setData(msgBundle);
                         myHandler.sendMessage(msgAttrs);
                     }
                     attrsRvcPre = attrsRcv;

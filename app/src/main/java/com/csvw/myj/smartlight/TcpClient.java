@@ -76,7 +76,13 @@ public class TcpClient implements Runnable {
      */
     public void sendByte(byte[] content){
         try {
-            dop.write(content,0,content.length);
+//            byte[] head = new byte[4];
+            byte[] head = {(byte) 0x63,(byte) 0x6d,(byte) 0x64,(byte) 0x3a};
+            byte[] contentNew= new byte[164];
+            System.arraycopy(head,0,contentNew,0,head.length);
+            System.arraycopy(content,0,contentNew,head.length,content.length);
+            dop.write( contentNew,0,contentNew.length);
+//            dop.write( content,0,content.length);
             dop.flush();
         } catch (IOException e) {
             e.printStackTrace();

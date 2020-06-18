@@ -76,10 +76,10 @@ public class Welcome extends AppCompatActivity implements View.OnTouchListener {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 imageViewPositive = customDialog.findViewById(R.id.positiveTextView);
-                //设置你的操作事项
-                WifiUtils wifiUtils = new WifiUtils(context);
-                wifiUtils.openWifi();
-                wifiUtils.connectWifiPws(Constants.SSID,Constants.WIFI_PASSWORD);
+//                //设置你的操作事项
+//                WifiUtils wifiUtils = new WifiUtils(context);
+//                wifiUtils.openWifi();
+//                wifiUtils.connectWifiPws(Constants.SSID,Constants.WIFI_PASSWORD);
                 try {
                     try{
                         checkTimeOut();
