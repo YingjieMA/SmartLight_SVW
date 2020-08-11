@@ -101,9 +101,9 @@ public class GetLightList {
         allList.add(light9);
         allList.add(light10);
         allList.add(rgbLight1);
+        allList.add(rgbLight2);
         allList.add(rgbLight3);
         allList.add(rgbLight4);
-        allList.add(rgbLight2);
         allList.add(rgbLight5);
         allList.add(rgbLight6);
         allList.add(rgbLight7);
@@ -175,6 +175,41 @@ public class GetLightList {
             attrs[rgbLight.getId()-1][5] = (byte) rgbLight.getIntenseValue();
             attrs[rgbLight.getId()-1][6] = (byte) 0xff;
             attrs[rgbLight.getId()-1][7] = (byte) 0xff;
+        }
+        return attrs;
+    }
+
+    /**
+     * 展示所用数据 3*8=24字节
+     * @return
+     */
+    public byte[][] setLightList2ByteDisplayOnly(){
+        byte[][] attrs = new byte[3][8];
+        Light[] lights =  new Light[3];
+        lights[0] = rgbLampList.get(0);
+        lights[1] = rgbLampList.get(1);
+        lights[2] = rgbLampList.get(2);
+
+        for (Light light : lights) {
+            RgbLight rgbLight = (RgbLight) light;
+//            attrs[rgbLight.getId()-1][0] = (byte) rgbLight.getId();
+            if (rgbLight.getId() == 1){
+                attrs[rgbLight.getId()-1][0] = (byte) 4;
+            }else if (rgbLight.getId() == 2){
+                attrs[rgbLight.getId()-1][0] = (byte) 16;
+            }else{
+                attrs[rgbLight.getId()-1][0] = (byte) 8;
+            }
+            attrs[rgbLight.getId()-1][1] = (byte) 0x80;
+            attrs[rgbLight.getId()-1][2] = (byte) rgbLight.getrValue();
+            attrs[rgbLight.getId()-1][3] = (byte) rgbLight.getgValue();
+            attrs[rgbLight.getId()-1][4] = (byte) rgbLight.getbValue();
+//            attrs[rgbLight.getId()-1][5] = (byte) rgbLight.getIntenseValue();
+            attrs[rgbLight.getId()-1][6] = (byte) 0x00;
+            attrs[rgbLight.getId()-1][7] = (byte) 0x02;
+            if (rgbLight.getState()){
+                attrs[rgbLight.getId()-1][5] = (byte) rgbLight.getIntenseValue();
+            }else{attrs[rgbLight.getId()-1][5] = (byte) 0;}
         }
         return attrs;
     }

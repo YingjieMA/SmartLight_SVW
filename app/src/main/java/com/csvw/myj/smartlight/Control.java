@@ -39,13 +39,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.csvw.myj.smartlight.sensor.AccelerometerManager;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Control extends Activity implements OnColorChangedListener {
+public class Control extends Activity implements OnColorChangedListener,AccelerometerListener {
     final String TAG = "Control";
     //存放接收到的数据
     byte[] attrsRvcPre = new byte[160];
@@ -119,6 +121,8 @@ public class Control extends Activity implements OnColorChangedListener {
         lightsList = getLightList.getWhiteLampList();
         rgbLightsList = getLightList.getRgbLampList();
         smartLightsList = getLightList.getSmartLightList();
+        //获取VW30色List
+        colorTemplateList = new GetColorTableList().getAllList();
         this.initialize(lightsList);
         imageView1 = findViewById(R.id.white_lamp_btn);
         imageView2 = findViewById(R.id.rgb_lamp_btn);
@@ -435,9 +439,12 @@ public class Control extends Activity implements OnColorChangedListener {
                 break;
         }
     }
+
     @Override
     public void colorChanged(int color) {
         RgbLight light = (RgbLight) adapter.light;
+        if (light == null)
+            return;
         TextView tv = findViewById(R.id.light_name);
         if (null != tv) {
             tv.setTextColor(color);
@@ -470,9 +477,12 @@ public class Control extends Activity implements OnColorChangedListener {
         r = light.getrValue();
         g = light.getgValue();
         b = light.getbValue();
+        i = light.getIntenseValue();
         Log.i("11", adapter.light.toString());
         if (TcpClient.getInstance() != null) {
-            sendBtyesData2HW();
+//            sendBtyesData2HW();
+//            sendByteData2Controller(r,g,b,i);
+            sendByteData2Controller();
         }
     }
 
@@ -499,6 +509,35 @@ public class Control extends Activity implements OnColorChangedListener {
             return false;
         }
     };
+
+    @Override
+    public void onAccelerationChanged(float x, float y, float z) {
+
+    }
+
+    /**
+     * 摇一摇事件
+     * @param force
+     */
+    @Override
+    public void onShake(float force) {
+        //VW30色随机一种颜色
+        int max = 29, min =0;
+        int num = (int) (Math.random()*(max-min)+min);
+        String color = colorTemplateList.get(num).getLightColor();
+        Log.i(TAG,"num:"+ num);
+        colorChanged(Color.parseColor(color));
+//        int max = 255, min =0;
+//        r = (int) (Math.random()*(max-min)+min);
+//        g= (int) (Math.random()*(max-min)+min);
+//        b = (int) (Math.random()*(max-min)+min);
+//        colorChanged(Color.rgb(r,g,b));
+        if (TcpClient.getInstance() != null) {
+//            sendBtyesData2HW();
+//            sendByteData2Controller(r,g,b,i);
+            sendByteData2Controller();
+        }
+    }
 
     /**
      * ListView数据适配器
@@ -597,9 +636,6 @@ public class Control extends Activity implements OnColorChangedListener {
             viewHolder.swBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (TcpClient.getInstance() != null) {
-                        sendBtyesData2HW();
-                    }
                     if (le.getType() == "white" || le.getType() == "smart") {
                         if (isChecked == true) {
                             le.setState(true);
@@ -627,6 +663,10 @@ public class Control extends Activity implements OnColorChangedListener {
                     }
                     Log.i(TAG,SocketHelper.byte2hex(SocketHelper.attrsArray2D21D(getLightList.setLightList2Byte()),160));
 //                    notifyDataSetChanged();
+                    if (TcpClient.getInstance() != null) {
+//                        sendBtyesData2HW();
+                        sendByteData2Controller();
+                    }
                 }
 
             });
@@ -654,7 +694,7 @@ public class Control extends Activity implements OnColorChangedListener {
         View vwColorTable = inflater.inflate(R.layout.vw_color_table, relativeLayout, false);
         gvTamplate = vwColorTable.findViewById(R.id.template_gridview);
         relativeLayout.addView(vwColorTable);
-        colorTemplateList = new GetColorTableList().getAllList();
+//        colorTemplateList = new GetColorTableList().getAllList();
         initializeTamplates(colorTemplateList);
     }
 
@@ -1023,7 +1063,8 @@ public class Control extends Activity implements OnColorChangedListener {
                         inputIntense.setText(String.valueOf(progress));
                         i = progress;
 //                                tv.setTextColor(Color.rgb(r,g,b));
-                        colorChanged(Color.rgb(r, g, b));
+//                        colorChanged(Color.rgb(r, g, b));
+                        intenseChanged(i);
                         Log.i("Color", "Intense r:" + r + ",g:" + g + " b:" + b);
 
                     } else {
@@ -1343,7 +1384,7 @@ public class Control extends Activity implements OnColorChangedListener {
     }
 
     /**
-     * 发送转为btye[]的LightList
+     * 发送转为btye[]的LightList ---> 智能顶灯
      */
     private void sendBtyesData2HW(){
         final TcpClient tcpClient = TcpClient.getInstance();
@@ -1357,4 +1398,71 @@ public class Control extends Activity implements OnColorChangedListener {
         }
     }
 
+
+
+    private void sendByteData2Controller() {
+//        final byte[] attrs = new byte[8];
+//        attrs[0] = (byte) 0xff;
+//        attrs[1] = (byte) 0xff;
+//        attrs[2] = (byte) r;
+//        attrs[3] = (byte) g;
+//        attrs[4] = (byte) b;
+//        attrs[5] = (byte) i;
+//        attrs[6] = (byte) 0x00;
+//        attrs[7] = (byte) 0x02;
+//        final TcpClient tcpClient = TcpClient.getInstance();
+//        if (null != tcpClient) {
+//            exec.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    tcpClient.sendByte(attrs);
+//                }
+//            });
+//        }
+        final TcpClient tcpClient = TcpClient.getInstance();
+        if (null!=tcpClient){
+            exec.execute(new Runnable() {
+                @Override
+                public void run() {
+                    tcpClient.sendByte(SocketHelper.attrsArray2D21D(getLightList.setLightList2ByteDisplayOnly(),24));
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //Check device supported Accelerometer senssor or not
+        if (AccelerometerManager.isListening()) {
+        //Start Accelerometer Listening
+            AccelerometerManager.stopListening();
+            Toast.makeText(getBaseContext(), "onStop Accelerometer Stoped",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(getBaseContext(), "onResume Accelerometer Started",
+                Toast.LENGTH_SHORT).show();
+        //Check device supported Accelerometer senssor or not
+        if (AccelerometerManager.isSupported(this)) {
+            //Start Accelerometer Listening
+            AccelerometerManager.startListening(this);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Check device supported Accelerometer senssor or not
+        if (AccelerometerManager.isListening()) {
+            //Start Accelerometer Listening
+            AccelerometerManager.stopListening();
+            Toast.makeText(getBaseContext(), "onDestroy Accelerometer Stoped",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 }

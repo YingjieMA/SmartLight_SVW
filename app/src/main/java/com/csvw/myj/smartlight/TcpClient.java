@@ -78,12 +78,14 @@ public class TcpClient implements Runnable {
         try {
 //            byte[] head = new byte[4];
             byte[] head = {(byte) 0x63,(byte) 0x6d,(byte) 0x64,(byte) 0x3a};
-            byte[] contentNew= new byte[164];
+//            byte[] contentNew= new byte[164];
+            byte[] contentNew= new byte[28];
             System.arraycopy(head,0,contentNew,0,head.length);
             System.arraycopy(content,0,contentNew,head.length,content.length);
             dop.write( contentNew,0,contentNew.length);
 //            dop.write( content,0,content.length);
             dop.flush();
+            Log.i(TAG,SocketHelper.byte2hex(content,28));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e){
@@ -113,7 +115,7 @@ public class TcpClient implements Runnable {
 //                    Log.i(TAG,"run收到消息: "+ new SocketHelper().arrPrint(new SocketHelper().byte2hex(buff,rcvLen)));
                     Log.i(TAG,"run收到消息: "+ rcvMsg);
                     if (rcvMsg.equals("accept")){
-                        SocketHelper.commCheck(pw);
+//                        SocketHelper.commCheck(pw);
                         continue;
                     }
                     Intent intent = new Intent();

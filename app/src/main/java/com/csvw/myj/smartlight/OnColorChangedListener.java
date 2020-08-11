@@ -7,6 +7,7 @@ package com.csvw.myj.smartlight;
 
 public interface OnColorChangedListener {
     void colorChanged(int s);
+    void intenseChanged(int s);
     void moodChanged(String m);
     void moodSave(String m);
 }

@@ -19,11 +19,11 @@ public class GetMoodTemplateList {
     private void init() {
         this.allList = allList;
         this.moodTemplates[0] = new MoodTemplate(1,"Euphoria", "c");
-        this.moodTemplates[1] = new MoodTemplate(1,"Vitality","c");
-        this.moodTemplates[2] = new MoodTemplate(1,"Desire","c");
-        this.moodTemplates[3] = new MoodTemplate(1,"Eternity","c");
-        this.moodTemplates[4] = new MoodTemplate(1,"Infinity","c");
-        this.moodTemplates[5] = new MoodTemplate(1,"Freedom","c");
+        this.moodTemplates[1] = new MoodTemplate(2,"Vitality","c");
+        this.moodTemplates[2] = new MoodTemplate(3,"Desire","c");
+        this.moodTemplates[3] = new MoodTemplate(4,"Eternity","c");
+        this.moodTemplates[4] = new MoodTemplate(5,"Infinity","c");
+        this.moodTemplates[5] = new MoodTemplate(6,"Freedom","c");
         for (MoodTemplate moodTemplate : moodTemplates) {
             allList.add(moodTemplate);
         }

@@ -23,12 +23,12 @@ public class GetColorTableList {
         this.colorTemplates[7] = new ColorTemplate(8,"fileder","#7C39FE","#7C39FE");
         this.colorTemplates[8] = new ColorTemplate(9,"cyan","#0089FF","#0089FF","VW10");
         this.colorTemplates[9] = new ColorTemplate(10,"grun","#00FF22","#00FF22");
-        this.colorTemplates[10] = new ColorTemplate(11,"bernstein","#FFA200","FFA200","VW10");
+        this.colorTemplates[10] = new ColorTemplate(11,"bernstein","#FFA200","#FFA200","VW10");
         this.colorTemplates[11] = new ColorTemplate(12,"koralle","#FF5563","#FF5563");
         this.colorTemplates[12] = new ColorTemplate(13,"lila","#4514FF","#4514FF","VW10");
         this.colorTemplates[13] = new ColorTemplate(14,"azur","#00B1FF","#00B1FF");
         this.colorTemplates[14] = new ColorTemplate(15,"apfelgrun","#00FF27","#00FF27");
-        this.colorTemplates[15] = new ColorTemplate(16,"kurkuma","#FF9726","FF9726");
+        this.colorTemplates[15] = new ColorTemplate(16,"kurkuma","#FF9726","#FF9726");
         this.colorTemplates[16] = new ColorTemplate(17,"hummer","#FF1261","#FF1261");
         this.colorTemplates[17] = new ColorTemplate(18,"blueberry","#3900FF","#3900FF");
         this.colorTemplates[18] = new ColorTemplate(19,"smaraged","#00FED5","#00FED5");

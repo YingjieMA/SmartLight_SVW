@@ -76,10 +76,21 @@ public class SocketHelper {
                 }
             }
     }
-
     public  static  byte[] attrsArray2D21D(byte[][] b){
+
         byte[] bytes = new byte[160];
-        for (int x = 0;x<20;x++){
+        for (int x = 0;x<(160/8);x++){
+            for(int y= 0;y<8;y++){
+                bytes[x*8+y]=b[x][y];
+            }
+        }
+        return bytes;
+    }
+//160
+    public  static  byte[] attrsArray2D21D(byte[][] b,int num){
+
+        byte[] bytes = new byte[num];
+        for (int x = 0;x<(num/8);x++){
             for(int y= 0;y<8;y++){
                 bytes[x*8+y]=b[x][y];
             }
