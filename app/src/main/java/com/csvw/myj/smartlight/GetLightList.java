@@ -68,7 +68,7 @@ public class GetLightList {
         light8 = new Light(108,"Door Opener Lamp","white",false,true,true);
         light9 = new Light(109,"Rear Reading Lamp","white",false,true,true);
         light10 = new Light(110,"Glove Box Lamp","white",false,true,true);
-        rgbLight1 = new RgbLight(1,"IP Decor Lamp","rgb",true,true,true,255,0,0,100);
+        rgbLight1 = new RgbLight(1,"IP Decor Lamp","rgb",false,true,true,255,0,0,100);
         rgbLight2 = new RgbLight(2,"Starry Lamp","rgb",false,true,true,255,255,255,100);
         rgbLight3 = new RgbLight(3,"Door Decor Lamp_vo.","rgb",false,true,true,255,255,255,100);
         rgbLight4 = new RgbLight(4,"Door Decor Lamp_hi.","rgb",false,true,true,255,255,255,100);

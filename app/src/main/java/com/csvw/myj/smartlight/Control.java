@@ -2,6 +2,7 @@ package com.csvw.myj.smartlight;
 
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +12,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.Spannable;
@@ -47,7 +50,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Control extends Activity implements OnColorChangedListener,AccelerometerListener {
+public class Control extends Activity implements OnColorChangedListener, AccelerometerListener {
     final String TAG = "Control";
     //存放接收到的数据
     byte[] attrsRvcPre = new byte[160];
@@ -77,8 +80,8 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
     private static int r = 255, g = 255, b = 255, i = 255;
 
     //Thumb图片大小 P20 200
-    private int seekWidth = (int) (MainActivity.density * 50+0.5f);
-    private int seekHeight = (int) (MainActivity.density * 50+0.5f);
+    private int seekWidth = (int) (MainActivity.density * 50 + 0.5f);
+    private int seekHeight = (int) (MainActivity.density * 50 + 0.5f);
     //用于隐藏的View
     View hiddenView;
 
@@ -100,6 +103,12 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
     //线程池
     ExecutorService exec = Executors.newCachedThreadPool();
     private ArrayList<Light> freedomRgbLightList;
+    //定时器需要
+    long timeLast = 0;
+    //振动
+    private Vibrator mVibrator;
+    //记录是否保存mood-freedom
+    private boolean savemood = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,18 +148,19 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
         carImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.i("坐标","x: "+event.getX());
-                Log.i("坐标","Y: "+event.getY());
+                Log.i("坐标", "x: " + event.getX());
+                Log.i("坐标", "Y: " + event.getY());
                 return true;
             }
         });
 
         Intent intent = getIntent();
         String action = intent.getAction();
-        if(action.equals("permission")){
-            permission = intent.getIntExtra("permission",1);
-            Log.i(TAG,"Permission = "+ permission);
+        if (action.equals("permission")) {
+            permission = intent.getIntExtra("permission", 1);
+            Log.i(TAG, "Permission = " + permission);
         }
+        mVibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
     }
 
     //单击事件监听器
@@ -178,7 +188,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                         parent.removeView(hiddenView);
                         rl.addView(view);
                         initialize(lightsList);
-                    }else if (null != hiddenView2){
+                    } else if (null != hiddenView2) {
                         ViewGroup parent = (ViewGroup) hiddenView2.getParent();
                         parent.removeView(hiddenView2);
                         view = inflater.inflate(R.layout.activity_epel, rl, false);
@@ -204,7 +214,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                         parent.removeView(hiddenView);
                         rl.addView(view);
                         initialize(rgbLightsList);
-                    }else if (null != hiddenView2){
+                    } else if (null != hiddenView2) {
                         ViewGroup parent = (ViewGroup) hiddenView2.getParent();
                         parent.removeView(hiddenView2);
                         view = inflater.inflate(R.layout.activity_epel, rl, false);
@@ -231,7 +241,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                         parent.removeView(hiddenView);
                         rl.addView(view);
                         initialize(rgbLightsList);
-                    }else if (null != hiddenView2){
+                    } else if (null != hiddenView2) {
                         ViewGroup parent = (ViewGroup) hiddenView2.getParent();
                         parent.removeView(hiddenView2);
                         view = inflater.inflate(R.layout.activity_epel, rl, false);
@@ -260,12 +270,12 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                         parent.removeView(hiddenView);
                         view = inflater.inflate(R.layout.mood_table, rl, false);
                         rl.addView(view);
-                        initializeMood(new GetMoodTemplateList().getAllList(),view);
-                    }else if(null != hiddenView2){
+                        initializeMood(new GetMoodTemplateList().getAllList(), view);
+                    } else if (null != hiddenView2) {
                         rl.removeView(hiddenView2);
                         view = inflater.inflate(R.layout.mood_table, rl, false);
                         rl.addView(view);
-                        initializeMood(new GetMoodTemplateList().getAllList(),view);
+                        initializeMood(new GetMoodTemplateList().getAllList(), view);
                     }
                 default:
                     break;
@@ -283,63 +293,66 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
     }
 
 
-
     /**
      * 初始化Mood
+     *
      * @param moodTemplateList
      */
-    private void initializeMood(List<MoodTemplate> moodTemplateList,View view) {
-        moodDataAdapter = new MoodDataAdapter(this, moodTemplateList,this);
+    private void initializeMood(List<MoodTemplate> moodTemplateList, View view) {
+        moodDataAdapter = new MoodDataAdapter(this, moodTemplateList, this);
         gvTamplate = view.findViewById(R.id.template_gridview_mood);
         this.gvTamplate.setAdapter(moodDataAdapter);
 
     }
+
     /**
      * 初始化30色标准
+     *
      * @param colorTemplateList
      */
     private void initializeTamplates(List<ColorTemplate> colorTemplateList) {
-        templatesDataAdapter = new TemplatesDataAdapter(this, colorTemplateList,this);
+        templatesDataAdapter = new TemplatesDataAdapter(this, colorTemplateList, this);
         this.gvTamplate.setAdapter(templatesDataAdapter);
 
     }
+
     /***
      * 添加LightView
      */
-    public void addLightView(String string){
-        switch(string){
+    public void addLightView(String string) {
+        switch (string) {
             case "Reading Lamp":
-                if (null!=reaadingLampView){
-                }else{
-                    reaadingLampView = new LightView(Control.this,R.drawable.reading_lamp,0,0);
+                if (null != reaadingLampView) {
+                } else {
+                    reaadingLampView = new LightView(Control.this, R.drawable.reading_lamp, 0, 0);
                     frameLayout.addView(reaadingLampView);
                 }
                 break;
             case "Door Opener Lamp":
-                if (null!=doorOpenerLampView){
-                }else{
-                    doorOpenerLampView = new LightView(Control.this,R.drawable.door_opener_lamp,0,221.5f);
+                if (null != doorOpenerLampView) {
+                } else {
+                    doorOpenerLampView = new LightView(Control.this, R.drawable.door_opener_lamp, 0, 221.5f);
                     frameLayout.addView(doorOpenerLampView);
                 }
                 break;
             case "Footwell Lamp_vo.":
-                if (null!=footwellLampView){
-                }else{
-                    footwellLampView = new LightView(Control.this,R.drawable.footwell_lamp,0,305.13f);
+                if (null != footwellLampView) {
+                } else {
+                    footwellLampView = new LightView(Control.this, R.drawable.footwell_lamp, 0, 305.13f);
                     frameLayout.addView(footwellLampView);
                 }
                 break;
             case "Makeup Lamp":
-                if (null!=makeupLampView){
-                }else{
-                    makeupLampView = new LightView(Control.this,R.drawable.makeup_lamp,0,0);
+                if (null != makeupLampView) {
+                } else {
+                    makeupLampView = new LightView(Control.this, R.drawable.makeup_lamp, 0, 0);
                     frameLayout.addView(makeupLampView);
                 }
                 break;
             case "MIKO Lamp_up":
-                if (null!=mikoLampUpView){
-                }else{
-                    mikoLampUpView = new LightView(Control.this,R.drawable.miko_lamp_up,0,346.1f);
+                if (null != mikoLampUpView) {
+                } else {
+                    mikoLampUpView = new LightView(Control.this, R.drawable.miko_lamp_up, 0, 346.1f);
                     frameLayout.addView(mikoLampUpView);
                 }
                 break;
@@ -347,41 +360,42 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                 break;
         }
     }
+
     /***
      * 移除LightView
      */
-    public void removeLightView(String string){
-        switch(string){
+    public void removeLightView(String string) {
+        switch (string) {
             case "Reading Lamp":
-                if (null!=reaadingLampView){
+                if (null != reaadingLampView) {
                     ViewGroup parent = (ViewGroup) reaadingLampView.getParent();
                     parent.removeView(reaadingLampView);
                     reaadingLampView = null;
                 }
                 break;
             case "Door Opener Lamp":
-                if (null!=doorOpenerLampView){
+                if (null != doorOpenerLampView) {
                     ViewGroup parent = (ViewGroup) doorOpenerLampView.getParent();
                     parent.removeView(doorOpenerLampView);
                     doorOpenerLampView = null;
                 }
                 break;
             case "Footwell Lamp_vo.":
-                if (null!=footwellLampView){
+                if (null != footwellLampView) {
                     ViewGroup parent = (ViewGroup) footwellLampView.getParent();
                     parent.removeView(footwellLampView);
                     footwellLampView = null;
                 }
                 break;
             case "Makeup Lamp":
-                if (null!=makeupLampView){
+                if (null != makeupLampView) {
                     ViewGroup parent = (ViewGroup) makeupLampView.getParent();
                     parent.removeView(makeupLampView);
                     makeupLampView = null;
                 }
                 break;
             case "MIKO Lamp_up":
-                if (null!=mikoLampUpView){
+                if (null != mikoLampUpView) {
                     ViewGroup parent = (ViewGroup) mikoLampUpView.getParent();
                     parent.removeView(mikoLampUpView);
                     mikoLampUpView = null;
@@ -391,24 +405,25 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                 break;
         }
     }
+
     /***
      * 添加RGBLightView
      */
-    public void addRGBLightView(String string,int color){
-        switch(string){
+    public void addRGBLightView(String string, int color) {
+        switch (string) {
             case "IP Decor Lamp":
-                if (null!=ipDecorLampView){
-                }else{
-                    ipDecorLampView = new LightView(Control.this,R.drawable.ip_decor_lamp,0,255.69f,color);
+                if (null != ipDecorLampView) {
+                } else {
+                    ipDecorLampView = new LightView(Control.this, R.drawable.ip_decor_lamp, 0, 255.69f, color);
                     frameLayout.addView(ipDecorLampView);
                 }
                 break;
             case "Starry Lamp":
                 break;
             case "Door Decor Lamp_vo.":
-                if (null!=doorDecorLampVo){
-                }else{
-                    doorDecorLampVo = new LightView(Control.this,R.drawable.door_decor_lamp_vo,0,252.43f,color);
+                if (null != doorDecorLampVo) {
+                } else {
+                    doorDecorLampVo = new LightView(Control.this, R.drawable.door_decor_lamp_vo, 0, 252.43f, color);
                     frameLayout.addView(doorDecorLampVo);
                 }
                 break;
@@ -416,20 +431,21 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                 break;
         }
     }
+
     /***
      * 移除RGBLightView
      */
-    public void removeRGBLightView(String string){
-        switch(string){
+    public void removeRGBLightView(String string) {
+        switch (string) {
             case "IP Decor Lamp":
-                if (null!=ipDecorLampView){
+                if (null != ipDecorLampView) {
                     ViewGroup parent = (ViewGroup) ipDecorLampView.getParent();
                     parent.removeView(ipDecorLampView);
                     ipDecorLampView = null;
                 }
                 break;
             case "Door Decor Lamp_vo.":
-                if (null!=doorDecorLampVo){
+                if (null != doorDecorLampVo) {
                     ViewGroup parent = (ViewGroup) doorDecorLampVo.getParent();
                     parent.removeView(doorDecorLampVo);
                     doorDecorLampVo = null;
@@ -452,9 +468,9 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
             light.setgValue((color & 0x00ff00) >> 8);
             light.setbValue((color & 0x0000ff));
             String lightName = (String) tv.getText();
-            switch(lightName){
+            switch (lightName) {
                 case "IP Decor Lamp":
-                    if (ipDecorLampView!=null) {
+                    if (ipDecorLampView != null) {
                         ViewGroup parent = (ViewGroup) ipDecorLampView.getParent();
                         parent.removeView(ipDecorLampView);
                         ipDecorLampView = new LightView(Control.this, R.drawable.ip_decor_lamp, 0, 255.69f, color);
@@ -462,12 +478,12 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                     }
                     break;
                 case "Door Decor Lamp_vo.":
-                    if (doorDecorLampVo!=null) {
+                    if (doorDecorLampVo != null) {
                         ViewGroup parent = (ViewGroup) doorDecorLampVo.getParent();
                         parent.removeView(doorDecorLampVo);
-                        doorDecorLampVo = new LightView(Control.this,R.drawable.door_decor_lamp_vo,0,252.43f,color);
+                        doorDecorLampVo = new LightView(Control.this, R.drawable.door_decor_lamp_vo, 0, 252.43f, color);
                         frameLayout.addView(doorDecorLampVo);
-                        doorOpenerLampView=null;
+                        doorOpenerLampView = null;
                     }
                     break;
                 default:
@@ -488,7 +504,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
 
     /**
      * OnTouch 效果
-     * */
+     */
     View.OnTouchListener onTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -517,27 +533,42 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
 
     /**
      * 摇一摇事件
+     *
      * @param force
      */
     @Override
     public void onShake(float force) {
         //VW30色随机一种颜色
-        int max = 29, min =0;
-        int num = (int) (Math.random()*(max-min)+min);
-        String color = colorTemplateList.get(num).getLightColor();
-        Log.i(TAG,"num:"+ num);
-        colorChanged(Color.parseColor(color));
-//        int max = 255, min =0;
-//        r = (int) (Math.random()*(max-min)+min);
-//        g= (int) (Math.random()*(max-min)+min);
-//        b = (int) (Math.random()*(max-min)+min);
-//        colorChanged(Color.rgb(r,g,b));
-        if (TcpClient.getInstance() != null) {
-//            sendBtyesData2HW();
-//            sendByteData2Controller(r,g,b,i);
-            sendByteData2Controller();
+//        int max = 29, min = 0;
+//        int num = (int) (Math.random() * (max - min) + min);
+//        String color = colorTemplateList.get(num).getLightColor();
+//        Log.i(TAG, "num:" + num);
+//        colorChanged(Color.parseColor(color));
+////        int max = 255, min =0;
+////        r = (int) (Math.random()*(max-min)+min);
+////        g= (int) (Math.random()*(max-min)+min);
+////        b = (int) (Math.random()*(max-min)+min);
+////        colorChanged(Color.rgb(r,g,b));
+//        if (TcpClient.getInstance() != null) {
+////            sendBtyesData2HW();
+////            sendByteData2Controller(r,g,b,i);
+//            sendByteData2Controller();
+//        }
+
+        if (System.currentTimeMillis() > (timeLast + 800)) {//0.8秒 内不在处理
+            timeLast = System.currentTimeMillis();
+            int max = 29, min = 0;
+            int num = (int) (Math.random() * (max - min) + min);
+            String color = colorTemplateList.get(num).getLightColor();
+            Log.i(TAG, "num:" + num);
+            colorChanged(Color.parseColor(color));
+            mVibrator.vibrate(200);// 设置震动
+            if (TcpClient.getInstance() != null) {
+                sendByteData2Controller();
+            }
         }
     }
+
 
     /**
      * ListView数据适配器
@@ -606,7 +637,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                 }
             } else {
                 if (le.getState()) {
-                    addRGBLightView(le.getName(),Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
+                    addRGBLightView(le.getName(), Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                     viewHolder.relativeLayout.setBackgroundColor(Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                     viewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                 } else {
@@ -651,7 +682,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                     } else {
                         if (isChecked == true) {
                             le.setState(true);
-                            addRGBLightView(le.getName(),Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
+                            addRGBLightView(le.getName(), Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                             finalViewHolder.relativeLayout.setBackgroundColor(Color.argb(255, ((RgbLight) le).getrValue(), ((RgbLight) le).getgValue(), ((RgbLight) le).getbValue()));
                             finalViewHolder.tvName.setTextColor(Color.parseColor("#000000"));
                         } else {
@@ -661,7 +692,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                             finalViewHolder.tvName.setTextColor(Color.parseColor("#ffffff"));
                         }
                     }
-                    Log.i(TAG,SocketHelper.byte2hex(SocketHelper.attrsArray2D21D(getLightList.setLightList2Byte()),160));
+                    Log.i(TAG, SocketHelper.byte2hex(SocketHelper.attrsArray2D21D(getLightList.setLightList2Byte()), 160));
 //                    notifyDataSetChanged();
                     if (TcpClient.getInstance() != null) {
 //                        sendBtyesData2HW();
@@ -676,10 +707,10 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
 
     /**
      * addCycleView when initalized call this function
-     * */
-    private void addCycleView(RelativeLayout relativeLayout){
+     */
+    private void addCycleView(RelativeLayout relativeLayout) {
         int color = Color.rgb(r, g, b);
-        Log.i("Click", "r:"+r +"g:"+g+"b:"+b);
+        Log.i("Click", "r:" + r + "g:" + g + "b:" + b);
         colorPickerView = new ColorPickerView(Control.this, Control.this, color);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -689,8 +720,8 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
 
     /**
      * addTableView when initalized call this function
-     * */
-    private void addTableView(RelativeLayout relativeLayout){
+     */
+    private void addTableView(RelativeLayout relativeLayout) {
         View vwColorTable = inflater.inflate(R.layout.vw_color_table, relativeLayout, false);
         gvTamplate = vwColorTable.findViewById(R.id.template_gridview);
         relativeLayout.addView(vwColorTable);
@@ -700,8 +731,8 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
 
     /**
      * addSeekBarView when initalized call this function
-     * */
-    private void addSeekBarView(RelativeLayout relativeLayout){
+     */
+    private void addSeekBarView(RelativeLayout relativeLayout) {
         final View seekBarView = inflater.inflate(R.layout.seekbar_light, relativeLayout, false);
         relativeLayout.addView(seekBarView);
         final SeekBar seekBarRed = seekBarView.findViewById(R.id.seekBarRed);
@@ -1130,7 +1161,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                     ViewGroup parent = (ViewGroup) hiddenView.getParent();
                     parent.removeView(hiddenView);
                     addCycleView(relativeLayout);
-                }else if (null != hiddenView2){
+                } else if (null != hiddenView2) {
                     Log.i("Click", "into here");
                     ViewGroup parent = (ViewGroup) hiddenView2.getParent();
                     parent.removeView(hiddenView2);
@@ -1150,7 +1181,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                     ViewGroup parent = (ViewGroup) hiddenView.getParent();
                     parent.removeView(hiddenView);
                     addTableView(relativeLayout);
-                }else if(null != colorPickerView){
+                } else if (null != colorPickerView) {
                     ViewGroup parent = (ViewGroup) colorPickerView.getParent();
                     parent.removeView(colorPickerView);
                     colorPickerView = null;
@@ -1172,7 +1203,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                     parent.removeView(colorPickerView);
                     colorPickerView = null;
                     addSeekBarView(relativeLayout);
-                }else if(null != hiddenView2){
+                } else if (null != hiddenView2) {
                     Log.i("Click", "into here");
                     ViewGroup parent = (ViewGroup) hiddenView2.getParent();
                     parent.removeView(hiddenView2);
@@ -1198,6 +1229,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
         }
         return d;
     }
+
     //设置
 //    Boolean notHandleAfterTextChangedEvent  = false;
 //    Boolean changeFromSeekBar = false;
@@ -1312,14 +1344,14 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
 
         @Override
         public void handleMessage(@NonNull Message msg) {
-            if(mActivity != null){
-                switch (msg.what){
+            if (mActivity != null) {
+                switch (msg.what) {
                     case 1:
-                        Log.i(TAG,"收到："+ msg.arg1);
-                        if (msg.arg1 == 1){
-                            Toast.makeText(getApplicationContext(),"有控制权，操作者模式",Toast.LENGTH_SHORT).show();
-                        }else if(msg.arg1 == 0){
-                            Toast.makeText(getApplicationContext(),"无控制权，观看者模式",Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "收到：" + msg.arg1);
+                        if (msg.arg1 == 1) {
+                            Toast.makeText(getApplicationContext(), "有控制权，操作者模式", Toast.LENGTH_SHORT).show();
+                        } else if (msg.arg1 == 0) {
+                            Toast.makeText(getApplicationContext(), "无控制权，观看者模式", Toast.LENGTH_SHORT).show();
                             rl.setOnClickListener(null);
                         }
                         break;
@@ -1328,7 +1360,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
                          * 收到信号，转为LightList,刷新列表
                          */
 //                        Log.i(TAG,"收到："+ msg.getData().getBundle("lightAttrs"));
-                        Log.i(TAG,"收到："+ msg.getData().getByteArray("lightAttrs"));
+                        Log.i(TAG, "收到：" + msg.getData().getByteArray("lightAttrs"));
 //                        SocketHelper.attrsArray(attrs,msg.getData().getByteArray("lightAttrs"));
 //                        getLightList.setByte2LightList(attrs);
 //                        adapter.notifyDataSetChanged();
@@ -1347,29 +1379,29 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
         @Override
         public void onReceive(Context context, Intent intent) {
             String mAction = intent.getAction();
-            switch (mAction){
+            switch (mAction) {
                 case "tcpClientReceiver":
-                    Bundle bundle =intent.getBundleExtra("tcpClientReceiver");
+                    Bundle bundle = intent.getBundleExtra("tcpClientReceiver");
                     byte b = bundle.getByte("permission");
                     byte[] attrsRcv = bundle.getByteArray("attrs");
-                    SocketHelper.attrsArray(attrs,attrsRcv);
-                    Log.i(TAG,""+ SocketHelper.byte2int(attrs[0][0])+","+SocketHelper.byte2int(attrs[0][1])+","+SocketHelper.byte2int(attrs[0][2])+","+SocketHelper.byte2int(attrs[0][3])+","+SocketHelper.byte2int(attrs[0][4])+","+SocketHelper.byte2int(attrs[0][5]));
-                    Log.i(TAG,""+ SocketHelper.byte2int(b));
+                    SocketHelper.attrsArray(attrs, attrsRcv);
+                    Log.i(TAG, "" + SocketHelper.byte2int(attrs[0][0]) + "," + SocketHelper.byte2int(attrs[0][1]) + "," + SocketHelper.byte2int(attrs[0][2]) + "," + SocketHelper.byte2int(attrs[0][3]) + "," + SocketHelper.byte2int(attrs[0][4]) + "," + SocketHelper.byte2int(attrs[0][5]));
+                    Log.i(TAG, "" + SocketHelper.byte2int(b));
 
-                    if (SocketHelper.byte2int(b) != permission ){
+                    if (SocketHelper.byte2int(b) != permission) {
                         Message msgPermission = Message.obtain();
                         msgPermission.what = 1;
                         msgPermission.arg1 = SocketHelper.byte2int(b);
                         myHandler.sendMessage(msgPermission);
                     }
-                    permission =  SocketHelper.byte2int(b);
-                    if (attrsRcv != attrsRvcPre){
-                        Log.i(TAG,"程序进入这里"+SocketHelper.byte2hex(attrsRcv,attrsRcv.length));
+                    permission = SocketHelper.byte2int(b);
+                    if (attrsRcv != attrsRvcPre) {
+                        Log.i(TAG, "程序进入这里" + SocketHelper.byte2hex(attrsRcv, attrsRcv.length));
 
                         Message msgAttrs = Message.obtain();
                         msgAttrs.what = 2;
                         Bundle msgBundle = new Bundle();
-                        msgBundle.putByteArray("lightAttrs",attrsRcv);
+                        msgBundle.putByteArray("lightAttrs", attrsRcv);
                         msgAttrs.setData(msgBundle);
                         myHandler.sendMessage(msgAttrs);
                     }
@@ -1378,17 +1410,18 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
             }
         }
     }
-    private void bindReceiver(){
+
+    private void bindReceiver() {
         IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
-        registerReceiver(myBroadcastReceiver,intentFilter);
+        registerReceiver(myBroadcastReceiver, intentFilter);
     }
 
     /**
      * 发送转为btye[]的LightList ---> 智能顶灯
      */
-    private void sendBtyesData2HW(){
+    private void sendBtyesData2HW() {
         final TcpClient tcpClient = TcpClient.getInstance();
-        if (null!=tcpClient){
+        if (null != tcpClient) {
             exec.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -1397,7 +1430,6 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
             });
         }
     }
-
 
 
     private void sendByteData2Controller() {
@@ -1420,11 +1452,11 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
 //            });
 //        }
         final TcpClient tcpClient = TcpClient.getInstance();
-        if (null!=tcpClient){
+        if (null != tcpClient) {
             exec.execute(new Runnable() {
                 @Override
                 public void run() {
-                    tcpClient.sendByte(SocketHelper.attrsArray2D21D(getLightList.setLightList2ByteDisplayOnly(),24));
+                    tcpClient.sendByte(SocketHelper.attrsArray2D21D(getLightList.setLightList2ByteDisplayOnly(), 24));
                 }
             });
         }
@@ -1435,7 +1467,7 @@ public class Control extends Activity implements OnColorChangedListener,Accelero
         super.onStop();
         //Check device supported Accelerometer senssor or not
         if (AccelerometerManager.isListening()) {
-        //Start Accelerometer Listening
+            //Start Accelerometer Listening
             AccelerometerManager.stopListening();
             Toast.makeText(getBaseContext(), "onStop Accelerometer Stoped",
                     Toast.LENGTH_SHORT).show();
